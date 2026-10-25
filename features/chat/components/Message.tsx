@@ -1,0 +1,60 @@
+'use client'
+
+import { formatDistanceToNow } from 'date-fns'
+import { Bot } from 'lucide-react'
+import { CopyButton } from '@/shared/components/CopyButton'
+import { ThinkingBlock } from './ThinkingBlock'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+interface MessageProps {
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  thinking?: string // Extended thinking content (Claude 4 models)
+  timestamp?: string
+}
+
+export function Message({ role, content, thinking, timestamp }: MessageProps) {
+  const isUser = role === 'user'
+
+  return (
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} fade-in`}>
+      <div
+        className={`max-w-[80%] relative group ${
+          isUser
+            ? 'message-user'
+            : 'message-assistant'
+        }`}
+      >
+        {!isUser && (
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-white" strokeWidth={2.5} />
+            </div>
+
+            {/* Copy Button - shows on hover */}
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <CopyButton text={content} />
+            </div>
+          </div>
+        )}
+
+        {/* Extended Thinking Block - Claude 4 models only */}
+        {!isUser && thinking && <ThinkingBlock content={thinking} />}
+ <div className="prose prose-invert prose-sm max-w-none">
+          <div className="text-[var(--text-primary)] leading-relaxed">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
+          </div>
+        </div>
+
+        {timestamp && (
+          <p className="text-xs text-[var(--text-muted)] mt-2">
+            {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
