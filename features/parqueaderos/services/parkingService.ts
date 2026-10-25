@@ -48,6 +48,106 @@ export const parkingService = {
     return data || [];
   },
 
+  // Obtener postulaciones completas para el panel de doble validación
+  async getPendingRequests() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('parking_requests')
+      .select(`
+        *,
+        resident:residents(*),
+        dwelling:dwellings(*),
+        vehicle:vehicles(*),
+        reviews:request_reviews(*)
+      `)
+      .order('submitted_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data || [];
+  },
+
+  // Registrar revisión (de Administración o de Consejo)
+  async submitReview(params: {
+    requestId: string;
+    reviewerRole: 'admin' | 'consejo';
+    decision: 'approved' | 'rejected';
+    checklist: Record<string, boolean>;
+    observations: string;
+    disqualificationReasonIds?: string[];
+  }) {
+    const supabase = createClient();
+
+    // 1. Obtener usuario actual o usar el del contexto
+    const { data: { user } } = await supabase.auth.getUser();
+    const reviewerId = user?.id || '00000000-0000-0000-0000-000000000000';
+
+    // 2. Insertar o actualizar la revisión del rol correspondiente
+    const { error: revErr } = await supabase
+      .from('request_reviews')
+      .upsert(
+        {
+          request_id: params.requestId,
+          reviewer_role: params.reviewerRole,
+          reviewer_id: reviewerId,
+          decision: params.decision,
+          checklist_data: params.checklist,
+          observations: params.observations,
+          reviewed_at: new Date().toISOString(),
+        },
+        { onConflict: 'request_id,reviewer_role' }
+      );
+
+    if (revErr) throw new Error('Error al registrar validación: ' + revErr.message);
+
+    // 3. Si es rechazada, asociar motivos de descalificación en tabla puente
+    if (params.decision === 'rejected' && params.disqualificationReasonIds?.length) {
+      const inserts = params.disqualificationReasonIds.map((rId) => ({
+        request_id: params.requestId,
+        reason_id: rId,
+        detail: params.observations || 'Rechazado en doble validación',
+        reviewed_by: reviewerId,
+      }));
+
+      await supabase.from('parking_request_disqualifications').upsert(inserts, {
+        onConflict: 'request_id,reason_id',
+      });
+
+      // Marcar solicitud como descalificada
+      await supabase
+        .from('parking_requests')
+        .update({ status: 'disqualified' })
+        .eq('id', params.requestId);
+
+      return { status: 'disqualified' };
+    }
+
+    // 4. Si es aprobada, verificar si el otro rol ya aprobó
+    const { data: allReviews } = await supabase
+      .from('request_reviews')
+      .select('reviewer_role, decision')
+      .eq('request_id', params.requestId);
+
+    const adminApproved = allReviews?.some((r) => r.reviewer_role === 'admin' && r.decision === 'approved');
+    const consejoApproved = allReviews?.some((r) => r.reviewer_role === 'consejo' && r.decision === 'approved');
+
+    if (adminApproved && consejoApproved) {
+      // Ambas aprobaciones completadas -> pasa a elegible para el sorteo
+      await supabase
+        .from('parking_requests')
+        .update({ status: 'eligible' })
+        .eq('id', params.requestId);
+
+      return { status: 'eligible' };
+    } else {
+      await supabase
+        .from('parking_requests')
+        .update({ status: 'under_review' })
+        .eq('id', params.requestId);
+
+      return { status: 'under_review' };
+    }
+  },
+
   // Obtener resumen de estadísticas generales para el Dashboard
   async getDashboardStats() {
     const supabase = createClient();
