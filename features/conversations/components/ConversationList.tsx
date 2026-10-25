@@ -220,6 +220,15 @@ export function ConversationList({ activeConversationId, userEmail }: Conversati
           )}
         </button>
 
+        {/* Parqueaderos Navigation Button */}
+        <button
+          onClick={() => router.push('/parqueaderos')}
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 font-medium text-sm transition-colors"
+        >
+          <span className="text-base">🚗</span>
+          <span>Parqueaderos</span>
+        </button>
+
         {/* Toggle Conversations Button */}
         <button
           onClick={() => setShowConversations(!showConversations)}
