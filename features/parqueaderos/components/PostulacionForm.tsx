@@ -17,6 +17,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     fullName: string;
     plate: string;
     unitNumber: string;
+    block: string;
   } | null>(null);
 
   const [formData, setFormData] = useState({
@@ -66,6 +67,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
         fullName: formData.fullName,
         plate: formData.plate.toUpperCase(),
         unitNumber: formData.unitNumber,
+        block: formData.block || 'Sin bloque',
       });
       if (onSuccess) onSuccess();
     } catch (err: any) {
@@ -99,6 +101,10 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
           <div className="flex justify-between border-b border-emerald-200/60 pb-2">
             <span className="text-gray-600 dark:text-gray-400">Titular de la Solicitud:</span>
             <span className="font-semibold">{acuse.fullName}</span>
+          </div>
+          <div className="flex justify-between border-b border-emerald-200/60 pb-2">
+            <span className="text-gray-600 dark:text-gray-400">Bloque / Torre:</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">{acuse.block}</span>
           </div>
           <div className="flex justify-between border-b border-emerald-200/60 pb-2">
             <span className="text-gray-600 dark:text-gray-400">Vivienda / Apartamento:</span>
@@ -183,14 +189,15 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             />
           </div>
           <div>
-            <label className="block font-medium mb-1">Bloque / Torre</label>
+            <label className="block font-medium mb-1">Bloque / Torre *</label>
             <input
               type="text"
               name="block"
               value={formData.block}
               onChange={handleChange}
-              placeholder="Ej: Torre 2"
+              placeholder="Ej: Torre 2 o Bloque 09"
               className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent focus:ring-2 focus:ring-emerald-500 outline-none"
+              required
             />
           </div>
           <div>
