@@ -2,6 +2,7 @@
 // SERVICIOS CRUD — MÓDULO DE PARQUEADEROS
 // ============================================================
 import { createClient } from '@/shared/lib/supabase/client';
+import { ejecutarSorteoOficial } from '../lib/sorteoEngine';
 import type {
   ParkingSpace,
   DisqualificationReason,
@@ -373,5 +374,152 @@ export const parkingService = {
       requestId: request.id,
       submittedAt: request.submitted_at,
     };
+  },
+
+  // Obtener asignaciones activas con datos de puesto y vehículo
+  async getAssignments(vehicleType: 'A' | 'M' = 'A') {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('parking_assignments')
+      .select(`
+        *,
+        parking_space:parking_spaces(*),
+        vehicle:vehicles(*),
+        dwelling:dwellings(*)
+      `)
+      .eq('status', 'active')
+      .order('assigned_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data || [];
+  },
+
+  // Ejecutar el sorteo completo y persistir resultados en Supabase
+  async executeRaffle(params: { vehicleType: 'A' | 'M'; period: string }) {
+    const supabase = createClient();
+
+    // 1. Obtener el sorteo
+    const { data: raffle, error: rErr } = await supabase
+      .from('raffles')
+      .select('*')
+      .eq('period', params.period)
+      .eq('vehicle_type', params.vehicleType)
+      .single();
+
+    if (rErr || !raffle) throw new Error('No se encontró el periodo de sorteo: ' + params.period);
+
+    // 2. Obtener solicitudes habilitadas (status = 'eligible')
+    const { data: eligibleRequests, error: reqErr } = await supabase
+      .from('parking_requests')
+      .select('*, vehicle:vehicles(*), resident:residents(*)')
+      .eq('raffle_id', raffle.id)
+      .eq('status', 'eligible');
+
+    if (reqErr) throw new Error('Error al consultar elegibles: ' + reqErr.message);
+    if (!eligibleRequests || eligibleRequests.length === 0) {
+      throw new Error('No hay solicitudes con estatus "Elegible" (aprobadas por Administración y Consejo).');
+    }
+
+    // 3. Obtener espacios disponibles
+    const { data: availableSpaces, error: spErr } = await supabase
+      .from('parking_spaces')
+      .select('*')
+      .eq('vehicle_type', params.vehicleType)
+      .eq('status', 'available');
+
+    if (spErr) throw new Error('Error al consultar espacios: ' + spErr.message);
+
+    // 4. Ejecutar el motor puro de sorteo
+    const resultado = ejecutarSorteoOficial({
+      raffleId: raffle.id,
+      vehicleType: params.vehicleType,
+      capacity: raffle.capacity,
+      period: raffle.period,
+      quarterStart: raffle.quarter_start,
+      quarterEnd: raffle.quarter_end,
+      eligibleRequests,
+      availableSpaces: availableSpaces || [],
+    });
+
+    // 5. Persistir Asignaciones Directas
+    for (const d of resultado.directAssignments) {
+      const req = eligibleRequests.find((r) => r.id === d.requestId);
+      if (!req) continue;
+
+      await supabase.from('parking_assignments').insert({
+        raffle_id: raffle.id,
+        request_id: req.id,
+        parking_space_id: d.spaceId,
+        vehicle_id: req.vehicle_id,
+        dwelling_id: req.dwelling_id,
+        assignment_type: 'direct',
+        period: raffle.period,
+        quarter_start: raffle.quarter_start,
+        quarter_end: raffle.quarter_end,
+        zone_assigned: d.zone,
+        status: 'active',
+        assigned_at: new Date().toISOString(),
+        expires_at: raffle.quarter_end,
+      });
+
+      // Actualizar espacio y postulación
+      await supabase.from('parking_spaces').update({ status: 'assigned' }).eq('id', d.spaceId);
+      await supabase.from('parking_requests').update({ status: 'assigned_direct' }).eq('id', req.id);
+    }
+
+    // 6. Persistir Asignaciones del Sorteo General
+    for (const r of resultado.raffleAssignments) {
+      const req = eligibleRequests.find((x) => x.id === r.requestId);
+      if (!req) continue;
+
+      await supabase.from('parking_assignments').insert({
+        raffle_id: raffle.id,
+        request_id: req.id,
+        parking_space_id: r.spaceId,
+        vehicle_id: req.vehicle_id,
+        dwelling_id: req.dwelling_id,
+        assignment_type: 'raffle',
+        period: raffle.period,
+        quarter_start: raffle.quarter_start,
+        quarter_end: raffle.quarter_end,
+        zone_assigned: r.zone,
+        status: 'active',
+        assigned_at: new Date().toISOString(),
+        expires_at: raffle.quarter_end,
+      });
+
+      await supabase.from('parking_spaces').update({ status: 'assigned' }).eq('id', r.spaceId);
+      await supabase.from('parking_requests').update({ status: 'assigned_raffle' }).eq('id', req.id);
+    }
+
+    // 7. Emitir Nuevas Balotas Blancas a quienes no ganaron
+    for (const b of resultado.newWhiteBallots) {
+      await supabase.from('white_ballots').insert({
+        cycle_id: raffle.cycle_id,
+        vehicle_type: params.vehicleType,
+        origin_raffle_id: raffle.id,
+        resident_id: b.residentId,
+        dwelling_id: b.dwellingId,
+        vehicle_id: b.vehicleId,
+        frozen_plate: b.plate,
+        frozen_model: b.model,
+        status: 'vigente',
+      });
+
+      await supabase.from('parking_requests').update({ status: 'not_assigned' }).eq('id', b.requestId);
+    }
+
+    // 8. Actualizar estado del sorteo
+    await supabase
+      .from('raffles')
+      .update({
+        status: 'sorteo_ejecutado',
+        revealed_seed: resultado.seed,
+        seed_hash: resultado.seedHash,
+        executed_at: new Date().toISOString(),
+      })
+      .eq('id', raffle.id);
+
+    return resultado;
   },
 };

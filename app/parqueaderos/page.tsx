@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { parkingService } from '@/features/parqueaderos/services/parkingService';
 import { PostulacionForm } from '@/features/parqueaderos/components/PostulacionForm';
 import { DobleValidacionPanel } from '@/features/parqueaderos/components/DobleValidacionPanel';
+import { SorteoPanel } from '@/features/parqueaderos/components/SorteoPanel';
 import type { DisqualificationReason } from '@/features/parqueaderos/types/parking';
 
 export default function ParqueaderosPage() {
@@ -20,7 +21,7 @@ export default function ParqueaderosPage() {
 
   const [reasons, setReasons] = useState<DisqualificationReason[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'resumen' | 'postulacion' | 'validacion' | 'motivos' | 'reglas'>('resumen');
+  const [activeTab, setActiveTab] = useState<'resumen' | 'postulacion' | 'validacion' | 'sorteo' | 'motivos' | 'reglas'>('resumen');
 
   useEffect(() => {
     async function loadData() {
@@ -170,6 +171,16 @@ export default function ParqueaderosPage() {
             🛡️ Doble Validación
           </button>
           <button
+            onClick={() => setActiveTab('sorteo')}
+            className={`pb-3 transition ${
+              activeTab === 'sorteo'
+                ? 'border-b-2 border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            🗳️ Sorteo y Asignaciones
+          </button>
+          <button
             onClick={() => setActiveTab('motivos')}
             className={`pb-3 transition ${
               activeTab === 'motivos'
@@ -264,6 +275,9 @@ export default function ParqueaderosPage() {
         {/* Contenido de la pestaña: Doble Validación */}
         {activeTab === 'validacion' && <DobleValidacionPanel />}
 
+        {/* Contenido de la pestaña: Sorteo Oficial */}
+        {activeTab === 'sorteo' && <SorteoPanel />}
+
         {/* Contenido de la pestaña: Catálogo de Motivos */}
         {activeTab === 'motivos' && (
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
@@ -304,6 +318,9 @@ export default function ParqueaderosPage() {
 
         {/* Contenido de la pestaña: Doble Validación */}
         {activeTab === 'validacion' && <DobleValidacionPanel />}
+
+        {/* Contenido de la pestaña: Sorteo Oficial */}
+        {activeTab === 'sorteo' && <SorteoPanel />}
 
         {/* Contenido de la pestaña: Reglas Balota Blanca */}
         {activeTab === 'reglas' && (
@@ -346,6 +363,9 @@ export default function ParqueaderosPage() {
 
         {/* Contenido de la pestaña: Doble Validación */}
         {activeTab === 'validacion' && <DobleValidacionPanel />}
+
+        {/* Contenido de la pestaña: Sorteo Oficial */}
+        {activeTab === 'sorteo' && <SorteoPanel />}
 
         {/* Pie de página obligatorio */}
         <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-center">
