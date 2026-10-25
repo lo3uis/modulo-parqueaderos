@@ -75,4 +75,203 @@ export const parkingService = {
       pendingReviews: requests.filter((r) => r.status === 'under_review' || r.status === 'pending').length,
     };
   },
+
+  // Crear una postulación completa con acuse de recibo
+  async submitParkingRequest(formData: {
+    unitNumber: string;
+    zone: string;
+    block: string;
+    houseNumber: string;
+    fullName: string;
+    documentId: string;
+    email: string;
+    phone: string;
+    residencyType: 'propietario' | 'arrendatario';
+    vehicleType: 'A' | 'M';
+    plate: string;
+    brand: string;
+    model: string;
+    vehicleCategory: 'nuevo' | 'antiguo';
+    isOversized: boolean;
+  }) {
+    const supabase = createClient();
+
+    // 1. Obtener o crear el ciclo anual y el sorteo activo
+    let cycleId: string;
+    const { data: activeCycle } = await supabase
+      .from('rotation_cycles')
+      .select('id')
+      .eq('year', 2026)
+      .single();
+
+    if (activeCycle) {
+      cycleId = activeCycle.id;
+    } else {
+      const { data: newCycle, error: cErr } = await supabase
+        .from('rotation_cycles')
+        .insert({
+          year: 2026,
+          start_date: '2026-01-01',
+          end_date: '2026-12-31',
+          status: 'active',
+        })
+        .select()
+        .single();
+      if (cErr) throw new Error('Error al inicializar ciclo anual: ' + cErr.message);
+      cycleId = newCycle.id;
+    }
+
+    // 2. Obtener o crear el sorteo activo para el tipo de vehículo
+    let raffleId: string;
+    const { data: activeRaffle } = await supabase
+      .from('raffles')
+      .select('id')
+      .eq('period', '2026-Q4')
+      .eq('vehicle_type', formData.vehicleType)
+      .single();
+
+    if (activeRaffle) {
+      raffleId = activeRaffle.id;
+    } else {
+      const { data: newRaffle, error: rErr } = await supabase
+        .from('raffles')
+        .insert({
+          cycle_id: cycleId,
+          period: '2026-Q4',
+          quarter_start: '2026-10-01',
+          quarter_end: '2026-12-31',
+          vehicle_type: formData.vehicleType,
+          capacity: formData.vehicleType === 'A' ? 96 : 25,
+          status: 'postulacion_abierta',
+        })
+        .select()
+        .single();
+      if (rErr) throw new Error('Error al inicializar periodo de sorteo: ' + rErr.message);
+      raffleId = newRaffle.id;
+    }
+
+    // 3. Crear o buscar vivienda (dwelling)
+    let dwellingId: string;
+    const { data: existingDwelling } = await supabase
+      .from('dwellings')
+      .select('id')
+      .eq('unit_number', formData.unitNumber)
+      .single();
+
+    if (existingDwelling) {
+      dwellingId = existingDwelling.id;
+    } else {
+      const { data: newDwelling, error: dErr } = await supabase
+        .from('dwellings')
+        .insert({
+          unit_number: formData.unitNumber,
+          zone: formData.zone,
+          block: formData.block,
+          house_number: formData.houseNumber,
+        })
+        .select()
+        .single();
+      if (dErr) throw new Error('Error al registrar vivienda: ' + dErr.message);
+      dwellingId = newDwelling.id;
+    }
+
+    // 4. Crear o buscar residente
+    let residentId: string;
+    const { data: existingResident } = await supabase
+      .from('residents')
+      .select('id')
+      .eq('document_id', formData.documentId)
+      .single();
+
+    if (existingResident) {
+      residentId = existingResident.id;
+    } else {
+      const { data: newResident, error: resErr } = await supabase
+        .from('residents')
+        .insert({
+          dwelling_id: dwellingId,
+          full_name: formData.fullName,
+          document_id: formData.documentId,
+          email: formData.email,
+          phone: formData.phone,
+          residency_type: formData.residencyType,
+          payments_current: true, // Inicialmente asumido al postularse
+        })
+        .select()
+        .single();
+      if (resErr) throw new Error('Error al registrar residente: ' + resErr.message);
+      residentId = newResident.id;
+    }
+
+    // 5. Generar código interno consecutivo (VEH-### o MOT-###)
+    const prefix = formData.vehicleType === 'A' ? 'VEH-' : 'MOT-';
+    const { count } = await supabase
+      .from('vehicles')
+      .select('*', { count: 'exact', head: true })
+      .eq('vehicle_type', formData.vehicleType);
+
+    const nextNum = String((count || 0) + 1).padStart(3, '0');
+    const internalCode = `${prefix}${nextNum}`;
+
+    // 6. Crear o buscar vehículo
+    let vehicleId: string;
+    const cleanPlate = formData.plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const { data: existingVehicle } = await supabase
+      .from('vehicles')
+      .select('id')
+      .eq('plate', cleanPlate)
+      .single();
+
+    if (existingVehicle) {
+      vehicleId = existingVehicle.id;
+    } else {
+      const { data: newVehicle, error: vErr } = await supabase
+        .from('vehicles')
+        .insert({
+          dwelling_id: dwellingId,
+          resident_id: residentId,
+          internal_code: internalCode,
+          plate: cleanPlate,
+          brand: formData.brand,
+          model: formData.model,
+          vehicle_type: formData.vehicleType,
+          vehicle_category: formData.vehicleCategory,
+          is_oversized: formData.isOversized,
+        })
+        .select()
+        .single();
+      if (vErr) throw new Error('Error al registrar vehículo: ' + vErr.message);
+      vehicleId = newVehicle.id;
+    }
+
+    // 7. Generar número de acuse único consecutivo
+    const receiptNumber = `ACUSE-${formData.vehicleType}-${Date.now().toString().slice(-6)}`;
+
+    // 8. Crear la postulación oficial (parking_request)
+    const { data: request, error: reqErr } = await supabase
+      .from('parking_requests')
+      .insert({
+        raffle_id: raffleId,
+        resident_id: residentId,
+        dwelling_id: dwellingId,
+        vehicle_id: vehicleId,
+        receipt_number: receiptNumber,
+        residency_type_snapshot: formData.residencyType,
+        payment_status_snapshot: 'al_dia',
+        documents_complete: formData.vehicleCategory === 'antiguo',
+        status: 'under_review',
+      })
+      .select()
+      .single();
+
+    if (reqErr) throw new Error('Error al radicar postulación: ' + reqErr.message);
+
+    return {
+      success: true,
+      receiptNumber,
+      internalCode,
+      requestId: request.id,
+      submittedAt: request.submitted_at,
+    };
+  },
 };

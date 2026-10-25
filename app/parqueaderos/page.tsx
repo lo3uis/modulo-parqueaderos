@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { parkingService } from '@/features/parqueaderos/services/parkingService';
+import { PostulacionForm } from '@/features/parqueaderos/components/PostulacionForm';
 import type { DisqualificationReason } from '@/features/parqueaderos/types/parking';
 
 export default function ParqueaderosPage() {
@@ -18,7 +19,7 @@ export default function ParqueaderosPage() {
 
   const [reasons, setReasons] = useState<DisqualificationReason[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'resumen' | 'motivos' | 'reglas'>('resumen');
+  const [activeTab, setActiveTab] = useState<'resumen' | 'postulacion' | 'motivos' | 'reglas'>('resumen');
 
   useEffect(() => {
     async function loadData() {
@@ -148,6 +149,16 @@ export default function ParqueaderosPage() {
             📊 Resumen y Flujo
           </button>
           <button
+            onClick={() => setActiveTab('postulacion')}
+            className={`pb-3 transition ${
+              activeTab === 'postulacion'
+                ? 'border-b-2 border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            📝 Radicar Postulación
+          </button>
+          <button
             onClick={() => setActiveTab('motivos')}
             className={`pb-3 transition ${
               activeTab === 'motivos'
@@ -229,6 +240,16 @@ export default function ParqueaderosPage() {
           </div>
         )}
 
+        {/* Contenido de la pestaña: Postulación */}
+        {activeTab === 'postulacion' && (
+          <PostulacionForm
+            onSuccess={async () => {
+              const dashStats = await parkingService.getDashboardStats();
+              setStats(dashStats);
+            }}
+          />
+        )}
+
         {/* Contenido de la pestaña: Catálogo de Motivos */}
         {activeTab === 'motivos' && (
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
@@ -255,6 +276,16 @@ export default function ParqueaderosPage() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Contenido de la pestaña: Postulación */}
+        {activeTab === 'postulacion' && (
+          <PostulacionForm
+            onSuccess={async () => {
+              const dashStats = await parkingService.getDashboardStats();
+              setStats(dashStats);
+            }}
+          />
         )}
 
         {/* Contenido de la pestaña: Reglas Balota Blanca */}
@@ -284,6 +315,16 @@ export default function ParqueaderosPage() {
               </li>
             </ul>
           </div>
+        )}
+
+        {/* Contenido de la pestaña: Postulación */}
+        {activeTab === 'postulacion' && (
+          <PostulacionForm
+            onSuccess={async () => {
+              const dashStats = await parkingService.getDashboardStats();
+              setStats(dashStats);
+            }}
+          />
         )}
 
         {/* Pie de página obligatorio */}
