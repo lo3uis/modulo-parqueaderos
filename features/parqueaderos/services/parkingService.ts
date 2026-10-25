@@ -78,9 +78,9 @@ export const parkingService = {
   }) {
     const supabase = createClient();
 
-    // 1. Obtener usuario actual o usar el del contexto
+    // 1. Obtener usuario actual o usar null en desarrollo
     const { data: { user } } = await supabase.auth.getUser();
-    const reviewerId = user?.id || '00000000-0000-0000-0000-000000000000';
+    const reviewerId = user?.id || null;
 
     // 2. Insertar o actualizar la revisión del rol correspondiente
     const { error: revErr } = await supabase
