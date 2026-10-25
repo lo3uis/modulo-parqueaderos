@@ -180,9 +180,9 @@ export const parkingService = {
   // Crear una postulación completa con acuse de recibo
   async submitParkingRequest(formData: {
     unitNumber: string;
-    zone: string;
+    zone?: string;
     block: string;
-    houseNumber: string;
+    houseNumber?: string;
     fullName: string;
     documentId: string;
     email: string;
@@ -266,9 +266,9 @@ export const parkingService = {
         .from('dwellings')
         .insert({
           unit_number: formData.unitNumber,
-          zone: formData.zone,
+          zone: formData.zone || 'Asignada por Sistema',
           block: formData.block,
-          house_number: formData.houseNumber,
+          house_number: formData.houseNumber || formData.unitNumber,
         })
         .select()
         .single();
@@ -374,6 +374,25 @@ export const parkingService = {
       requestId: request.id,
       submittedAt: request.submitted_at,
     };
+  },
+
+  // Obtener balotas blancas vigentes del ciclo actual
+  async getWhiteBallots(vehicleType: 'A' | 'M' = 'A') {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('white_ballots')
+      .select(`
+        *,
+        resident:residents(*),
+        dwelling:dwellings(*),
+        vehicle:vehicles(*)
+      `)
+      .eq('vehicle_type', vehicleType)
+      .eq('status', 'vigente')
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return data || [];
   },
 
   // Obtener asignaciones activas con datos de puesto y vehículo

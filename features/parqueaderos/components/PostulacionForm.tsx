@@ -175,19 +175,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
         <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
           1. Datos de la Vivienda
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div>
-            <label className="block font-medium mb-1">N° Unidad / Apartamento *</label>
-            <input
-              type="text"
-              name="unitNumber"
-              value={formData.unitNumber}
-              onChange={handleChange}
-              placeholder="Ej: Apto 302"
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent focus:ring-2 focus:ring-emerald-500 outline-none"
-              required
-            />
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div>
             <label className="block font-medium mb-1">Bloque / Torre *</label>
             <input
@@ -201,18 +189,16 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             />
           </div>
           <div>
-            <label className="block font-medium mb-1">Zona Asignada</label>
-            <select
-              name="zone"
-              value={formData.zone}
+            <label className="block font-medium mb-1">N° Casa / Apartamento *</label>
+            <input
+              type="text"
+              name="unitNumber"
+              value={formData.unitNumber}
               onChange={handleChange}
+              placeholder="Ej: Casa 01 o Apto 302"
               className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent focus:ring-2 focus:ring-emerald-500 outline-none"
-            >
-              <option value="Zona A">Zona A</option>
-              <option value="Zona B">Zona B</option>
-              <option value="Zona C">Zona C</option>
-              <option value="Zona D">Zona D</option>
-            </select>
+              required
+            />
           </div>
         </div>
       </div>

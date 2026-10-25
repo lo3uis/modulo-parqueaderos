@@ -8,6 +8,7 @@ export function SorteoPanel() {
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState(false);
   const [assignments, setAssignments] = useState<any[]>([]);
+  const [whiteBallots, setWhiteBallots] = useState<any[]>([]);
   const [eligibleCount, setEligibleCount] = useState(0);
   const [lastResult, setLastResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -16,9 +17,10 @@ export function SorteoPanel() {
     try {
       setLoading(true);
       setError(null);
-      const [allReqs, assignList] = await Promise.all([
+      const [allReqs, assignList, ballotsList] = await Promise.all([
         parkingService.getPendingRequests(),
         parkingService.getAssignments(vehicleType),
+        parkingService.getWhiteBallots(vehicleType),
       ]);
 
       const eligibles = allReqs.filter(
@@ -26,6 +28,7 @@ export function SorteoPanel() {
       );
       setEligibleCount(eligibles.length);
       setAssignments(assignList.filter((a) => a.parking_space?.vehicle_type === vehicleType));
+      setWhiteBallots(ballotsList);
     } catch (err: any) {
       console.error('Error al cargar datos del sorteo:', err);
       setError(err.message);
@@ -216,6 +219,75 @@ export function SorteoPanel() {
                       )}
                     </td>
                     <td className="p-3.5 text-gray-500">{a.period}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Tabla Oficial de Balotas Blancas Vigentes */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-amber-50/40 dark:bg-amber-950/20 flex justify-between items-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-base">⚪</span>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                Padrón Oficial de Balotas Blancas Vigentes (Ciclo Anual 2026)
+              </h3>
+            </div>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Participantes habilitados que no obtuvieron cupo en sorteos previos. Tienen asignación directa para el próximo trimestre.
+            </p>
+          </div>
+          <span className="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-bold text-xs">
+            {whiteBallots.length} Titulares
+          </span>
+        </div>
+
+        {whiteBallots.length === 0 ? (
+          <div className="p-8 text-center text-xs text-gray-500">
+            No hay balotas blancas vigentes actualmente para esta categoría.
+            <br />
+            (Cuando la demanda de solicitudes supere los 96 cupos de carros o 25 de motos, quienes queden sin espacio recibirán su balota automáticamente aquí).
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 uppercase text-[10px] tracking-wider">
+                <tr>
+                  <th className="p-3.5">Titular</th>
+                  <th className="p-3.5">Vivienda</th>
+                  <th className="p-3.5">Placa Congelada</th>
+                  <th className="p-3.5">Vehículo / Modelo</th>
+                  <th className="p-3.5">Estado / Beneficio</th>
+                  <th className="p-3.5">Fecha Otorgamiento</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {whiteBallots.map((b) => (
+                  <tr key={b.id} className="hover:bg-amber-50/30 dark:hover:bg-amber-950/10 transition">
+                    <td className="p-3.5 font-semibold text-gray-900 dark:text-gray-100">
+                      {b.resident?.full_name}
+                    </td>
+                    <td className="p-3.5 text-gray-600 dark:text-gray-300">
+                      {b.dwelling?.unit_number} ({b.dwelling?.block || 'Bloque Principal'})
+                    </td>
+                    <td className="p-3.5 font-mono font-bold text-blue-600 dark:text-blue-400">
+                      [{b.frozen_plate}]
+                    </td>
+                    <td className="p-3.5 text-gray-500">
+                      {b.frozen_model || 'Modelo estándar'} ({b.vehicle?.internal_code || 'VEH'})
+                    </td>
+                    <td className="p-3.5">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold text-[10px]">
+                        Asignación Directa Próximo Periodo
+                      </span>
+                    </td>
+                    <td className="p-3.5 text-gray-500">
+                      {new Date(b.created_at).toLocaleDateString('es-CO')}
+                    </td>
                   </tr>
                 ))}
               </tbody>
