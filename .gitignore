@@ -63,3 +63,11 @@ Thumbs.db
 # Supabase
 supabase/.branches
 supabase/.temp
+
+PASWORD_*.txt
+*.txt
+
+
+PASWORD_*.txt
+*.txt
+
