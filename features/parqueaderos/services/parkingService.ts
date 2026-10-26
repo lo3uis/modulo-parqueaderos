@@ -632,9 +632,52 @@ export const parkingService = {
       .from('incidents')
       .select('*, parking_space:parking_spaces(*)')
       .order('occurred_at', { ascending: false })
-      .limit(20);
+      .limit(30);
 
     if (error) throw new Error(error.message);
+    return data || [];
+  },
+
+  // PORTERÍA: Editar una incidencia existente
+  async updateIncident(id: string, data: {
+    parkingSpaceId: string;
+    observedPlate: string;
+    incidentType: string;
+    hasWarning: boolean;
+    notes: string;
+  }) {
+    const supabase = createClient();
+    const cleanPlate = data.observedPlate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    const { data: updated, error } = await supabase
+      .from('incidents')
+      .update({
+        parking_space_id: data.parkingSpaceId,
+        observed_plate: cleanPlate,
+        incident_type: data.incidentType,
+        has_warning: data.hasWarning,
+        notes: data.notes,
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error('Error al actualizar incidencia: ' + error.message);
+    return updated;
+  },
+
+  // DOBLE VALIDACIÓN: Consultar amonestaciones oficiales activas por placa
+  async getActiveWarningsByPlate(plate: string) {
+    const supabase = createClient();
+    const cleanPlate = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    const { data, error } = await supabase
+      .from('incidents')
+      .select('*')
+      .eq('observed_plate', cleanPlate)
+      .eq('has_warning', true);
+
+    if (error) return [];
     return data || [];
   },
 };

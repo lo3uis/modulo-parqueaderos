@@ -13,8 +13,9 @@ export default function PorteriaPage() {
   const [incidents, setIncidents] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
-  // Estado para el modal de reportar incidencia
+  // Estado para el modal de reportar o editar incidencia
   const [showIncidentModal, setShowIncidentModal] = useState(false);
+  const [editingIncidentId, setEditingIncidentId] = useState<string | null>(null);
   const [incidentForm, setIncidentForm] = useState({
     parkingSpaceId: '',
     observedPlate: '',
@@ -23,6 +24,16 @@ export default function PorteriaPage() {
     notes: '',
   });
   const [reporting, setReporting] = useState(false);
+
+  // Catálogo oficial de tipos de infracción
+  const TIPOS_INFRACCION = [
+    { code: 'unauthorized_vehicle', label: '1. Vehículo no autorizado (sin cupo en el conjunto)', severidad: 'Alta' },
+    { code: 'vehicle_mismatch', label: '2. Vehículo distinto al registrado en el sorteo', severidad: 'Alta' },
+    { code: 'wrong_space', label: '3. Invasión de puesto ajeno', severidad: 'Alta' },
+    { code: 'bad_parking', label: '4. Mal parqueado / Obstrucción de vía', severidad: 'Media' },
+    { code: 'speed_excess', label: '5. Exceso de velocidad / Maniobra peligrosa', severidad: 'Media' },
+    { code: 'verbal_warning', label: '6. Advertencia preventiva / Subsanado en el acto', severidad: 'Baja' },
+  ];
 
   useEffect(() => {
     async function init() {
@@ -74,12 +85,18 @@ export default function PorteriaPage() {
 
     try {
       setReporting(true);
-      await parkingService.reportIncident({
-        ...incidentForm,
-        expectedVehicleId: result?.vehicle?.id,
-      });
-      alert('✅ Incidencia registrada y amonestación archivada con éxito.');
+      if (editingIncidentId) {
+        await parkingService.updateIncident(editingIncidentId, incidentForm);
+        alert('✅ Incidencia actualizada y corregida con éxito.');
+      } else {
+        await parkingService.reportIncident({
+          ...incidentForm,
+          expectedVehicleId: result?.vehicle?.id,
+        });
+        alert('✅ Incidencia registrada y amonestación archivada con éxito.');
+      }
       setShowIncidentModal(false);
+      setEditingIncidentId(null);
       setIncidentForm({
         parkingSpaceId: '',
         observedPlate: '',
@@ -91,7 +108,7 @@ export default function PorteriaPage() {
       const inc = await parkingService.getRecentIncidents();
       setIncidents(inc);
     } catch (err: any) {
-      alert('Error al registrar incidencia: ' + err.message);
+      alert('Error al procesar incidencia: ' + err.message);
     } finally {
       setReporting(false);
     }
@@ -341,12 +358,13 @@ export default function PorteriaPage() {
                     <th className="p-3.5">Tipo de Infracción</th>
                     <th className="p-3.5">Amonestación</th>
                     <th className="p-3.5">Detalle / Notas</th>
+                    <th className="p-3.5 text-right">Acción</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {incidents.map((inc) => (
                     <tr key={inc.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20">
-                      <td className="p-3.5 text-gray-500">
+                      <td className="p-3.5 text-gray-500 whitespace-nowrap">
                         {new Date(inc.occurred_at).toLocaleString('es-CO')}
                       </td>
                       <td className="p-3.5 font-mono font-bold text-rose-600 dark:text-rose-400">
@@ -356,23 +374,40 @@ export default function PorteriaPage() {
                         N° {inc.parking_space?.space_number} ({inc.parking_space?.zone})
                       </td>
                       <td className="p-3.5">
-                        {inc.incident_type === 'unauthorized_vehicle' && 'Vehículo no autorizado'}
-                        {inc.incident_type === 'wrong_space' && 'Invasión de puesto ajeno'}
-                        {inc.incident_type === 'other' && 'Otra infracción'}
+                        {TIPOS_INFRACCION.find((t) => t.code === inc.incident_type)?.label || inc.incident_type}
                       </td>
                       <td className="p-3.5">
                         {inc.has_warning ? (
                           <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold text-[10px]">
-                            Amonestación Oficial
+                            🔴 Amonestación Oficial (Inhabilita)
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[10px]">
-                            Advertencia verbal
+                          <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-medium text-[10px]">
+                            🟡 Advertencia Verbal
                           </span>
                         )}
                       </td>
                       <td className="p-3.5 text-gray-600 dark:text-gray-300 max-w-xs truncate">
                         {inc.notes || 'Sin observaciones'}
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingIncidentId(inc.id);
+                            setIncidentForm({
+                              parkingSpaceId: inc.parking_space_id,
+                              observedPlate: inc.observed_plate,
+                              incidentType: inc.incident_type,
+                              hasWarning: inc.has_warning,
+                              notes: inc.notes || '',
+                            });
+                            setShowIncidentModal(true);
+                          }}
+                          className="px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-blue-600 hover:text-white font-semibold text-[11px] transition"
+                        >
+                          ✏️ Editar
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -391,7 +426,7 @@ export default function PorteriaPage() {
             >
               <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-3">
                 <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                  Registrar Incidencia / Amonestación en Portería
+                  {editingIncidentId ? '✏️ Modificar / Corregir Incidencia' : '⚠️ Registrar Incidencia en Portería'}
                 </h3>
                 <button
                   type="button"
@@ -432,29 +467,44 @@ export default function PorteriaPage() {
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Tipo de Infracción</label>
+                <label className="block font-semibold mb-1">Tipo de Infracción *</label>
                 <select
                   value={incidentForm.incidentType}
-                  onChange={(e) => setIncidentForm({ ...incidentForm, incidentType: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-rose-500"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const isVerbal = val === 'verbal_warning';
+                    setIncidentForm({
+                      ...incidentForm,
+                      incidentType: val,
+                      hasWarning: !isVerbal, // Si es advertencia verbal, desmarca la amonestación oficial por defecto
+                    });
+                  }}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent outline-none focus:ring-2 focus:ring-rose-500 font-medium"
                 >
-                  <option value="unauthorized_vehicle">Vehículo no autorizado (sin cupo en el conjunto)</option>
-                  <option value="wrong_space">Invasión de puesto ajeno</option>
-                  <option value="other">Mal parqueado / Obstrucción</option>
+                  {TIPOS_INFRACCION.map((t) => (
+                    <option key={t.code} value={t.code}>
+                      [{t.severidad}] {t.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="hasWarning"
-                  checked={incidentForm.hasWarning}
-                  onChange={(e) => setIncidentForm({ ...incidentForm, hasWarning: e.target.checked })}
-                  className="rounded text-rose-600 focus:ring-rose-500"
-                />
-                <label htmlFor="hasWarning" className="font-semibold text-rose-700 dark:text-rose-300 cursor-pointer">
-                  Generar Amonestación Oficial (Afecta historial de sorteos futuros)
-                </label>
+              <div className="p-3 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 space-y-1">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="hasWarning"
+                    checked={incidentForm.hasWarning}
+                    onChange={(e) => setIncidentForm({ ...incidentForm, hasWarning: e.target.checked })}
+                    className="rounded text-rose-600 focus:ring-rose-500 w-4 h-4 cursor-pointer"
+                  />
+                  <label htmlFor="hasWarning" className="font-bold text-rose-700 dark:text-rose-300 cursor-pointer">
+                    Generar Amonestación Oficial (Sanción para Siguiente Trimestre)
+                  </label>
+                </div>
+                <p className="text-[11px] text-gray-500 pl-6">
+                  Si se marca, el sistema alertará al Consejo y la Administración en el próximo sorteo para descalificar la postulación por violación de reglamento.
+                </p>
               </div>
 
               <div>

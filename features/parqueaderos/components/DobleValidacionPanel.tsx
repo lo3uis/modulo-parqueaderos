@@ -22,6 +22,37 @@ export function DobleValidacionPanel() {
   const [observations, setObservations] = useState('');
   const [selectedReasonId, setSelectedReasonId] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [activeWarnings, setActiveWarnings] = useState<any[]>([]);
+
+  const handleOpenModal = async (req: any) => {
+    setSelectedRequest(req);
+    setObservations('');
+    // Consultar amonestaciones oficiales del vehículo
+    const plate = req.vehicle?.plate || '';
+    const warnings = await parkingService.getActiveWarningsByPlate(plate);
+    setActiveWarnings(warnings);
+
+    if (warnings.length > 0) {
+      // Si tiene amonestaciones, desmarcamos el punto 4 automáticamente
+      setChecklist({
+        paymentsCurrent: true,
+        docsApproved: true,
+        unitMatch: true,
+        noSanctions: false,
+      });
+      // Pre-seleccionar motivo de sanción previa
+      const priorReason = reasons.find((r) => r.reason_code === 'PRIOR_VIOLATION' || r.reason_code === 'E07_DUPLICADO');
+      if (priorReason) setSelectedReasonId(priorReason.id);
+      setObservations(`Vehículo registra ${warnings.length} amonestación(es) oficial(es) en portería.`);
+    } else {
+      setChecklist({
+        paymentsCurrent: true,
+        docsApproved: true,
+        unitMatch: true,
+        noSanctions: true,
+      });
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -182,10 +213,7 @@ export function DobleValidacionPanel() {
 
                   <div>
                     <button
-                      onClick={() => {
-                        setSelectedRequest(req);
-                        setObservations('');
-                      }}
+                      onClick={() => handleOpenModal(req)}
                       className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-emerald-600 hover:text-white font-semibold text-xs transition"
                     >
                       {activeRole === 'admin' ? 'Validar como Admin' : 'Validar como Consejo'}
@@ -221,6 +249,26 @@ export function DobleValidacionPanel() {
                 ✕
               </button>
             </div>
+
+            {/* Alerta de Amonestaciones de Portería */}
+            {activeWarnings.length > 0 && (
+              <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-500 rounded-xl space-y-1.5 text-xs text-rose-800 dark:text-rose-300 animate-pulse">
+                <div className="font-extrabold flex items-center gap-1.5">
+                  <span>🚨</span>
+                  <span>ATENCIÓN: {activeWarnings.length} Amonestación(es) Oficial(es) en Portería</span>
+                </div>
+                <div className="text-[11px] space-y-1 pl-5">
+                  {activeWarnings.map((w) => (
+                    <div key={w.id}>
+                      • Infracción: <strong>{w.incident_type}</strong> — &quot;{w.notes || 'Sin detalle'}&quot; ({new Date(w.occurred_at).toLocaleDateString('es-CO')})
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] font-bold text-rose-600 dark:text-rose-400 pl-5">
+                  Recomendación: Descalificar por violación previa de reglamento de parqueaderos.
+                </p>
+              </div>
+            )}
 
             {/* Checklist de verificación */}
             <div className="space-y-3 text-xs">
