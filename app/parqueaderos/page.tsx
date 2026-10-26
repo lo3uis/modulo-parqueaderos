@@ -312,22 +312,6 @@ export default function ParqueaderosPage() {
           </div>
         )}
 
-        {/* Contenido de la pestaña: Postulación */}
-        {activeTab === 'postulacion' && (
-          <PostulacionForm
-            onSuccess={async () => {
-              const dashStats = await parkingService.getDashboardStats();
-              setStats(dashStats);
-            }}
-          />
-        )}
-
-        {/* Contenido de la pestaña: Doble Validación */}
-        {activeTab === 'validacion' && <DobleValidacionPanel />}
-
-        {/* Contenido de la pestaña: Sorteo Oficial */}
-        {activeTab === 'sorteo' && <SorteoPanel />}
-
         {/* Contenido de la pestaña: Reglas Balota Blanca */}
         {activeTab === 'reglas' && (
           <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4">
@@ -356,22 +340,6 @@ export default function ParqueaderosPage() {
             </ul>
           </div>
         )}
-
-        {/* Contenido de la pestaña: Postulación */}
-        {activeTab === 'postulacion' && (
-          <PostulacionForm
-            onSuccess={async () => {
-              const dashStats = await parkingService.getDashboardStats();
-              setStats(dashStats);
-            }}
-          />
-        )}
-
-        {/* Contenido de la pestaña: Doble Validación */}
-        {activeTab === 'validacion' && <DobleValidacionPanel />}
-
-        {/* Contenido de la pestaña: Sorteo Oficial */}
-        {activeTab === 'sorteo' && <SorteoPanel />}
 
         {/* Pie de página obligatorio */}
         <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-center">

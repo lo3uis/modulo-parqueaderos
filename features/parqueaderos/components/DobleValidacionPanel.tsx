@@ -61,7 +61,17 @@ export function DobleValidacionPanel() {
         parkingService.getPendingRequests(),
         parkingService.getDisqualificationReasons(),
       ]);
-      setRequests(reqs);
+
+      // Consultar amonestaciones de cada vehículo para mostrar alerta en tarjeta
+      const reqsWithWarnings = await Promise.all(
+        reqs.map(async (r: any) => {
+          const plate = r.vehicle?.plate || '';
+          const warnings = await parkingService.getActiveWarningsByPlate(plate);
+          return { ...r, warningsCount: warnings.length, warnings };
+        })
+      );
+
+      setRequests(reqsWithWarnings);
       setReasons(rs);
       if (rs.length > 0) setSelectedReasonId(rs[0].id);
     } catch (err) {
@@ -165,6 +175,11 @@ export function DobleValidacionPanel() {
                       <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                         [{req.vehicle?.plate}]
                       </span>
+                      {req.warningsCount > 0 && (
+                        <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-rose-600 text-white animate-pulse flex items-center gap-1 shadow-sm">
+                          🚨 {req.warningsCount} AMONESTACIÓN(ES) EN PORTERÍA
+                        </span>
+                      )}
                     </div>
 
                     <div className="text-gray-600 dark:text-gray-400">
