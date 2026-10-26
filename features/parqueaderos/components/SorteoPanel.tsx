@@ -198,8 +198,13 @@ export function SorteoPanel() {
                   <tr key={a.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                     <td className="p-3.5 font-bold font-mono text-sm text-emerald-600 dark:text-emerald-400">
                       N° {a.parking_space?.space_number}
+                      {['47', '48', '49', '50'].includes(a.parking_space?.space_number) && (
+                        <span className="ml-1.5 text-[9px] bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded font-sans font-bold">
+                          Grande
+                        </span>
+                      )}
                     </td>
-                    <td className="p-3.5 font-medium">{a.zone_assigned}</td>
+                    <td className="p-3.5 font-semibold text-gray-700 dark:text-gray-300">{a.zone_assigned}</td>
                     <td className="p-3.5 font-semibold text-gray-900 dark:text-gray-100">
                       {a.dwelling?.unit_number} ({a.dwelling?.block || 'Principal'})
                     </td>

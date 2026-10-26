@@ -448,7 +448,31 @@ export const parkingService = {
 
     if (spErr) throw new Error('Error al consultar espacios: ' + spErr.message);
 
-    // 4. Ejecutar el motor puro de sorteo
+    // 3.5. Construir memoria histórica: Bloque + Casa + Marca + Placa -> Puestos ya ocupados
+    const { data: pastAssignments } = await supabase
+      .from('parking_assignments')
+      .select(`
+        parking_space_id,
+        parking_space:parking_spaces(space_number),
+        vehicle:vehicles(plate, brand),
+        dwelling:dwellings(unit_number, block)
+      `);
+
+    const historicalOccupiedSpaces: Record<string, string[]> = {};
+    if (pastAssignments) {
+      for (const pa of pastAssignments as any[]) {
+        const key = `${pa.dwelling?.block || ''}-${pa.dwelling?.unit_number || ''}-${pa.vehicle?.brand || ''}-${pa.vehicle?.plate || ''}`.toUpperCase();
+        const spaceNum = pa.parking_space?.space_number;
+        if (spaceNum) {
+          if (!historicalOccupiedSpaces[key]) historicalOccupiedSpaces[key] = [];
+          if (!historicalOccupiedSpaces[key].includes(spaceNum)) {
+            historicalOccupiedSpaces[key].push(spaceNum);
+          }
+        }
+      }
+    }
+
+    // 4. Ejecutar el motor puro de sorteo con memoria histórica
     const resultado = ejecutarSorteoOficial({
       raffleId: raffle.id,
       vehicleType: params.vehicleType,
@@ -458,6 +482,7 @@ export const parkingService = {
       quarterEnd: raffle.quarter_end,
       eligibleRequests,
       availableSpaces: availableSpaces || [],
+      historicalOccupiedSpaces,
     });
 
     // 5. Persistir Asignaciones Directas
