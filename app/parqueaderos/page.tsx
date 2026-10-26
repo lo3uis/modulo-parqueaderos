@@ -337,6 +337,10 @@ export default function ParqueaderosPage() {
                 <span className="text-emerald-500 font-bold">✓</span>
                 <span><strong>Rotación de Zona:</strong> La asignación directa recibe un puesto físico aleatorio y rota de zona igual que los ganadores del sorteo.</span>
               </li>
+              <li className="flex gap-2">
+                <span className="text-blue-500 font-bold">♿</span>
+                <span><strong>Asignación Prioritaria (Salud / Adulto Mayor):</strong> Debe solicitarse expresamente desde la fase de inscripción con su soporte médico o acreditación de edad. La Administración y el Consejo validan el documento y adjudican el puesto anticipadamente de forma pública para no entrar en controversia, descontándolo del bombo general antes del sorteo.</span>
+              </li>
             </ul>
           </div>
         )}
