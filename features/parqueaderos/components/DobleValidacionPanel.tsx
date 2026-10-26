@@ -24,6 +24,65 @@ export function DobleValidacionPanel() {
   const [processing, setProcessing] = useState(false);
   const [activeWarnings, setActiveWarnings] = useState<any[]>([]);
 
+  // Estado para asignación prioritaria directa e inmediata (Salud / Adulto Mayor)
+  const [specialAssignReq, setSpecialAssignReq] = useState<any | null>(null);
+  const [availableSpaces, setAvailableSpaces] = useState<any[]>([]);
+  const [chosenSpaceNumber, setChosenSpaceNumber] = useState('');
+  const [specialReason, setSpecialReason] = useState('Salud / Movilidad Reducida / Discapacidad');
+  const [specialNote, setSpecialNote] = useState('');
+  const [assigningSpecial, setAssigningSpecial] = useState(false);
+  const [actionSuccessMsg, setActionSuccessMsg] = useState<string | null>(null);
+
+  const handleOpenSpecialAssignModal = async (req: any) => {
+    setSpecialAssignReq(req);
+    setActionSuccessMsg(null);
+    setSpecialNote('');
+
+    // Pre-cargar puesto solicitado si viene en la nota
+    const note = req.payment_validation_note || '';
+    let defaultPuesto = '';
+    const match = note.match(/Puesto:\s*(\w+)/i);
+    if (match && match[1] && match[1] !== 'Por') {
+      defaultPuesto = match[1];
+    }
+    setChosenSpaceNumber(defaultPuesto);
+
+    if (note.includes('Adulto Mayor')) {
+      setSpecialReason('Adulto Mayor / Tercera Edad');
+    } else {
+      setSpecialReason('Salud / Movilidad Reducida / Discapacidad');
+    }
+
+    // Cargar espacios disponibles para el tipo de vehículo
+    const vType = req.vehicle?.vehicle_type || 'A';
+    const spaces = await parkingService.getParkingSpaces();
+    const avail = spaces.filter((s) => s.vehicle_type === vType && s.status === 'available');
+    setAvailableSpaces(avail);
+  };
+
+  const handleConfirmSpecialAssign = async () => {
+    if (!specialAssignReq || !chosenSpaceNumber) {
+      alert('Por favor selecciona o escribe el número de puesto a adjudicar.');
+      return;
+    }
+    try {
+      setAssigningSpecial(true);
+      const res = await parkingService.assignSpecialPrioritySpace({
+        requestId: specialAssignReq.id,
+        spaceNumber: chosenSpaceNumber,
+        reason: specialReason,
+        note: specialNote,
+      });
+      setActionSuccessMsg(res.message);
+      setSpecialAssignReq(null);
+      await loadData();
+    } catch (err: any) {
+      alert('Error en asignación directa: ' + err.message);
+    } finally {
+      setAssigningSpecial(false);
+    }
+  };
+
   const handleOpenModal = async (req: any) => {
     setSelectedRequest(req);
     setObservations('');
@@ -146,6 +205,21 @@ export function DobleValidacionPanel() {
         </div>
       </div>
 
+      {actionSuccessMsg && (
+        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-200 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">✅</span>
+            <span className="font-medium">{actionSuccessMsg}</span>
+          </div>
+          <button
+            onClick={() => setActionSuccessMsg(null)}
+            className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline px-2 py-1"
+          >
+            Entendido ✕
+          </button>
+        </div>
+      )}
+
       {/* Lista de Postulaciones */}
       {requests.length === 0 ? (
         <div className="p-10 text-center bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 text-xs text-gray-500 space-y-2">
@@ -212,7 +286,13 @@ export function DobleValidacionPanel() {
                         Consejo: {consejoReview ? (consejoReview.decision === 'approved' ? 'Aprobado ✓' : 'Rechazado ✗') : 'Pendiente'}
                       </span>
 
-                      {isEligible && (
+                      {req.status === 'assigned_direct' && (
+                        <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px] flex items-center gap-1 shadow-sm">
+                          ♿ ASIGNADO DIRECTO (SALUD / EDAD)
+                        </span>
+                      )}
+
+                      {isEligible && req.status !== 'assigned_direct' && (
                         <span className="px-2 py-0.5 rounded bg-emerald-500 text-white font-bold text-[10px]">
                           ⭐ HABILITADO PARA SORTEO
                         </span>
@@ -224,9 +304,29 @@ export function DobleValidacionPanel() {
                         </span>
                       )}
                     </div>
+
+                    {req.payment_validation_note?.includes('[PRIORIDAD_ESPECIAL]') && (
+                      <div className="mt-2 p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-[11px] text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                        <span className="text-base">♿</span>
+                        <div>
+                          <strong>Solicitud Prioritaria:</strong>{' '}
+                          {req.payment_validation_note.replace('[PRIORIDAD_ESPECIAL]:', '')}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  <div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {req.status !== 'assigned_direct' && (
+                      <button
+                        onClick={() => handleOpenSpecialAssignModal(req)}
+                        className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm"
+                        title="Adjudicar inmediatamente este puesto por condición de salud o adulto mayor sin esperar al sorteo"
+                      >
+                        <span>⚡ Asignar Directo (Salud/Edad)</span>
+                      </button>
+                    )}
+
                     <button
                       onClick={() => handleOpenModal(req)}
                       className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-emerald-600 hover:text-white font-semibold text-xs transition"
@@ -392,6 +492,114 @@ export function DobleValidacionPanel() {
                 className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition shadow-sm"
               >
                 {processing ? 'Guardando...' : 'Aprobar Validación ✓'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Asignación Prioritaria Inmediata (Salud / Adulto Mayor) */}
+      {specialAssignReq && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-900 max-w-lg w-full rounded-2xl border border-blue-200 dark:border-blue-900 p-6 space-y-5 shadow-2xl animate-scaleUp">
+            <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                  <span>♿ ASIGNACIÓN PRIORITARIA DIRECTA (ANTICIPADA)</span>
+                </span>
+                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">
+                  {specialAssignReq.resident?.full_name}
+                </h3>
+                <p className="text-xs text-gray-500">
+                  {specialAssignReq.dwelling?.block ? `${specialAssignReq.dwelling?.block} - ` : ''}
+                  {specialAssignReq.dwelling?.unit_number} • Placa: <strong>[{specialAssignReq.vehicle?.plate}]</strong>
+                </p>
+              </div>
+              <button
+                onClick={() => setSpecialAssignReq(null)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900 text-xs text-blue-800 dark:text-blue-300">
+              ℹ️ Esta acción adjudicará el puesto <strong>de inmediato</strong> en el sistema, habilitándolo en portería y <strong>excluyendo al vehículo y al puesto del sorteo general</strong>.
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-semibold block mb-1 text-gray-700 dark:text-gray-300">
+                  Motivo de la Adjudicación Prioritaria:
+                </label>
+                <select
+                  value={specialReason}
+                  onChange={(e) => setSpecialReason(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Salud / Movilidad Reducida / Discapacidad">🩺 Salud / Movilidad Reducida / Discapacidad</option>
+                  <option value="Adulto Mayor / Tercera Edad">🧓 Adulto Mayor / Tercera Edad</option>
+                  <option value="Excepción Médica o Administrativa Autorizada">⚖️ Excepción Médica o Administrativa Autorizada</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-semibold block mb-1 text-gray-700 dark:text-gray-300">
+                  Seleccionar Puesto Físico Disponible:
+                </label>
+                {availableSpaces.length > 0 ? (
+                  <select
+                    value={chosenSpaceNumber}
+                    onChange={(e) => setChosenSpaceNumber(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  >
+                    <option value="">-- Selecciona un puesto disponible --</option>
+                    {availableSpaces.map((s) => (
+                      <option key={s.id} value={s.space_number}>
+                        Puesto N° {s.space_number} ({s.zone}) {s.allows_oversized ? '[Puesto Grande]' : ''}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={chosenSpaceNumber}
+                    onChange={(e) => setChosenSpaceNumber(e.target.value)}
+                    placeholder="Número de puesto (ej: 05)"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  />
+                )}
+              </div>
+
+              <div>
+                <label className="font-semibold block mb-1 text-gray-700 dark:text-gray-300">
+                  Justificación / Observaciones de la excepción:
+                </label>
+                <textarea
+                  value={specialNote}
+                  onChange={(e) => setSpecialNote(e.target.value)}
+                  placeholder="Ej: Residente con certificado médico de artrosis severa, requiere acceso directo sin escaleras."
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent text-xs outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs">
+              <button
+                type="button"
+                onClick={() => setSpecialAssignReq(null)}
+                className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={assigningSpecial || !chosenSpaceNumber}
+                onClick={handleConfirmSpecialAssign}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+              >
+                <span>{assigningSpecial ? 'Adjudicando...' : '⚡ Confirmar Adjudicación Inmediata'}</span>
               </button>
             </div>
           </div>

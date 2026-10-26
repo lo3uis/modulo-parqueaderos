@@ -22,7 +22,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
 
   const [formData, setFormData] = useState({
     unitNumber: '',
-    zone: 'Zona A',
+    zone: '',
     block: '',
     houseNumber: '',
     fullName: '',
@@ -36,6 +36,10 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     model: '',
     vehicleCategory: 'antiguo' as 'nuevo' | 'antiguo',
     isOversized: false,
+    isSpecialPriority: false,
+    specialPriorityType: 'salud' as 'salud' | 'edad',
+    requestedSpaceNumber: '',
+    specialPriorityNote: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -120,6 +124,15 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
           </div>
         </div>
 
+        {formData.isSpecialPriority && (
+          <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-900 text-xs text-blue-800 dark:text-blue-300 flex items-center gap-2">
+            <span className="text-base">♿</span>
+            <span>
+              <strong>Prioridad Especial Registrada:</strong> {formData.specialPriorityType === 'salud' ? 'Salud / Movilidad Reducida' : 'Adulto Mayor / Tercera Edad'}. Esta solicitud puede ser adjudicada de forma anticipada directamente por la administración sin esperar a la rifa del sorteo.
+            </span>
+          </div>
+        )}
+
         <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300">
           ⚠️ <strong>Importante:</strong> Tu solicitud pasará a la fase de Doble Validación (Administración + Consejo). Conserve su número de acuse.
         </div>
@@ -129,7 +142,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             setAcuse(null);
             setFormData({
               unitNumber: '',
-              zone: 'Zona A',
+              zone: '',
               block: '',
               houseNumber: '',
               fullName: '',
@@ -143,6 +156,10 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
               model: '',
               vehicleCategory: 'antiguo',
               isOversized: false,
+              isSpecialPriority: false,
+              specialPriorityType: 'salud',
+              requestedSpaceNumber: '',
+              specialPriorityNote: '',
             });
           }}
           className="w-full py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold transition"
@@ -329,6 +346,80 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             </label>
           </div>
         )}
+      </div>
+
+      {/* Sección 4: Asignación Prioritaria Especial (Salud / Tercera Edad) */}
+      <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+            <span>♿ 4. Asignación Prioritaria Especial (Opcional)</span>
+          </h3>
+          <span className="text-[11px] text-gray-500">Salud / Movilidad Reducida o Adulto Mayor</span>
+        </div>
+
+        <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/20 space-y-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isSpecialPriority"
+              name="isSpecialPriority"
+              checked={formData.isSpecialPriority}
+              onChange={handleChange}
+              className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+            />
+            <label htmlFor="isSpecialPriority" className="text-xs font-semibold text-gray-800 dark:text-gray-200 cursor-pointer">
+              Solicitar asignación prioritaria directa por condición médica / movilidad o adulto mayor (sin esperar al sorteo)
+            </label>
+          </div>
+
+          {formData.isSpecialPriority && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+              <div>
+                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
+                  Motivo de la Prioridad *
+                </label>
+                <select
+                  name="specialPriorityType"
+                  value={formData.specialPriorityType}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="salud">🩺 Salud / Movilidad Reducida / Discapacidad</option>
+                  <option value="edad">🧓 Adulto Mayor / Tercera Edad</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
+                  Puesto Específico Solicitado (Opcional)
+                </label>
+                <input
+                  type="text"
+                  name="requestedSpaceNumber"
+                  value={formData.requestedSpaceNumber}
+                  onChange={handleChange}
+                  placeholder="Ej: 05 (Cercano a rampa o acceso)"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
+                  Justificación / Soporte Médico o Edad *
+                </label>
+                <input
+                  type="text"
+                  name="specialPriorityNote"
+                  value={formData.specialPriorityNote}
+                  onChange={handleChange}
+                  placeholder="Ej: Adulto mayor de 82 años / Carné discapacidad"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+                  required={formData.isSpecialPriority}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">

@@ -147,6 +147,10 @@ export interface ParkingRequest {
   status: RequestStatus;
   has_white_ballot: boolean;
   is_direct_assignment: boolean;
+  is_special_priority?: boolean;
+  special_priority_reason?: 'salud' | 'edad' | string;
+  requested_space_number?: string;
+  special_priority_note?: string;
   previous_zone_assigned?: string;
   submitted_at: string;
   resident?: Resident;

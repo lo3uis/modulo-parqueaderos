@@ -204,7 +204,9 @@ export function SorteoPanel() {
                         </span>
                       )}
                     </td>
-                    <td className="p-3.5 font-semibold text-gray-700 dark:text-gray-300">{a.zone_assigned}</td>
+                    <td className="p-3.5 font-semibold text-gray-700 dark:text-gray-300">
+                      {a.parking_space?.zone || a.zone_assigned}
+                    </td>
                     <td className="p-3.5 font-semibold text-gray-900 dark:text-gray-100">
                       {a.dwelling?.unit_number} ({a.dwelling?.block || 'Principal'})
                     </td>
@@ -216,6 +218,10 @@ export function SorteoPanel() {
                       {a.assignment_type === 'direct' ? (
                         <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold text-[10px]">
                           Directa (Balota Blanca)
+                        </span>
+                      ) : a.assignment_type === 'special' ? (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold text-[10px] inline-flex items-center gap-1">
+                          ♿ Directa (Salud / Edad)
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold text-[10px]">

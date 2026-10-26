@@ -194,6 +194,10 @@ export const parkingService = {
     model: string;
     vehicleCategory: 'nuevo' | 'antiguo';
     isOversized: boolean;
+    isSpecialPriority?: boolean;
+    specialPriorityType?: 'salud' | 'edad';
+    requestedSpaceNumber?: string;
+    specialPriorityNote?: string;
   }) {
     const supabase = createClient();
 
@@ -348,7 +352,14 @@ export const parkingService = {
     // 7. Generar número de acuse único consecutivo
     const receiptNumber = `ACUSE-${formData.vehicleType}-${Date.now().toString().slice(-6)}`;
 
-    // 8. Crear la postulación oficial (parking_request)
+    // 8. Preparar nota de prioridad especial si aplica
+    let paymentNote: string | null = null;
+    if (formData.isSpecialPriority) {
+      const reasonLabel = formData.specialPriorityType === 'salud' ? 'Salud / Movilidad Reducida' : 'Adulto Mayor / Tercera Edad';
+      paymentNote = `[PRIORIDAD_ESPECIAL]: ${reasonLabel} | Puesto: ${formData.requestedSpaceNumber ? formData.requestedSpaceNumber.padStart(2, '0') : 'Por asignar'} | Justificación: ${formData.specialPriorityNote || 'Sin observación adicional'}`;
+    }
+
+    // 9. Crear la postulación oficial (parking_request)
     const { data: request, error: reqErr } = await supabase
       .from('parking_requests')
       .insert({
@@ -359,6 +370,8 @@ export const parkingService = {
         receipt_number: receiptNumber,
         residency_type_snapshot: formData.residencyType,
         payment_status_snapshot: 'al_dia',
+        payment_validation_note: paymentNote,
+        is_direct_assignment: !!formData.isSpecialPriority,
         documents_complete: formData.vehicleCategory === 'antiguo',
         status: 'under_review',
       })
@@ -565,6 +578,95 @@ export const parkingService = {
       .eq('id', raffle.id);
 
     return resultado;
+  },
+
+  // ASIGNACIÓN PRIORITARIA DIRECTA E INMEDIATA (Salud / Adulto Mayor)
+  // Permite adjudicar un puesto específico de forma anticipada sin esperar al sorteo
+  async assignSpecialPrioritySpace(params: {
+    requestId: string;
+    spaceNumber: string; // ej. '05'
+    reason: string;      // ej. 'Salud / Movilidad Reducida' o 'Adulto Mayor'
+    note?: string;
+  }) {
+    const supabase = createClient();
+
+    // 1. Obtener la solicitud completa con sus relaciones
+    const { data: req, error: reqErr } = await supabase
+      .from('parking_requests')
+      .select('*, resident:residents(*), vehicle:vehicles(*), dwelling:dwellings(*), raffle:raffles(*)')
+      .eq('id', params.requestId)
+      .single();
+
+    if (reqErr || !req) {
+      throw new Error('No se encontró la solicitud especificada: ' + (reqErr?.message || ''));
+    }
+
+    // 2. Normalizar número de puesto y buscar en parking_spaces
+    const formattedNumber = params.spaceNumber.trim().padStart(2, '0');
+    const vType = req.vehicle?.vehicle_type || 'A';
+
+    const { data: space, error: sErr } = await supabase
+      .from('parking_spaces')
+      .select('*')
+      .eq('space_number', formattedNumber)
+      .eq('vehicle_type', vType)
+      .maybeSingle();
+
+    if (sErr || !space) {
+      throw new Error(`El puesto N° ${formattedNumber} no existe para el tipo de vehículo (${vType === 'A' ? 'Carro' : 'Moto'}).`);
+    }
+
+    if (space.status !== 'available') {
+      throw new Error(`El puesto N° ${space.space_number} (${space.zone}) ya se encuentra asignado u ocupado.`);
+    }
+
+    // 3. Determinar periodo y fechas del sorteo
+    const rafflePeriod = req.raffle?.period || '2026-Q4';
+    const quarterStart = req.raffle?.quarter_start || '2026-10-01';
+    const quarterEnd = req.raffle?.quarter_end || '2026-12-31';
+
+    // 4. Crear la asignación activa inmediata
+    const { data: assignment, error: aErr } = await supabase
+      .from('parking_assignments')
+      .insert({
+        raffle_id: req.raffle_id,
+        request_id: req.id,
+        parking_space_id: space.id,
+        vehicle_id: req.vehicle_id,
+        dwelling_id: req.dwelling_id,
+        assignment_type: 'special',
+        period: rafflePeriod,
+        quarter_start: quarterStart,
+        quarter_end: quarterEnd,
+        zone_assigned: space.zone,
+        status: 'active',
+        assigned_at: new Date().toISOString(),
+        expires_at: quarterEnd,
+      })
+      .select('*, parking_space:parking_spaces(*)')
+      .single();
+
+    if (aErr) {
+      throw new Error('Error al registrar la asignación especial en base de datos: ' + aErr.message);
+    }
+
+    // 5. Marcar el espacio como asignado (bloqueado para sorteo general)
+    await supabase.from('parking_spaces').update({ status: 'assigned' }).eq('id', space.id);
+
+    // 6. Actualizar estado de la solicitud a 'assigned_direct'
+    const updatedNote = `[ASIGNACIÓN DIRECTA]: ${params.reason} | Puesto N° ${space.space_number} (${space.zone}) | ${params.note || ''}`;
+    await supabase.from('parking_requests').update({
+      status: 'assigned_direct',
+      is_direct_assignment: true,
+      payment_validation_note: updatedNote,
+    }).eq('id', req.id);
+
+    return {
+      success: true,
+      assignment,
+      space,
+      message: `Puesto N° ${space.space_number} (${space.zone}) adjudicado directamente a ${req.resident?.full_name} (${req.vehicle?.plate}) por motivo de ${params.reason}.`,
+    };
   },
 
   // PORTERÍA: Buscar placa y verificar asignación activa
