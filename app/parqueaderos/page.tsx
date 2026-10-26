@@ -12,6 +12,8 @@ export default function ParqueaderosPage() {
   const [stats, setStats] = useState({
     totalCarSpaces: 0,
     maxCarCapacity: 96,
+    availableCarSpaces: 96,
+    specialAssignedCount: 0,
     totalMotoSpaces: 0,
     maxMotoCapacity: 25,
     activeAssignments: 0,
@@ -89,13 +91,21 @@ export default function ParqueaderosPage() {
             </div>
             <div className="mt-2 flex items-baseline justify-between">
               <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">
-                {stats.maxCarCapacity}
+                {stats.availableCarSpaces ?? stats.maxCarCapacity}
               </div>
               <span className="text-xs bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
-                Registrados: {stats.totalCarSpaces}
+                Total Físico: {stats.maxCarCapacity}
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Cupos válidos por sorteo trimestral</p>
+            <p className="text-xs text-gray-500 mt-2">
+              {stats.specialAssignedCount > 0 ? (
+                <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                  ⭐ {stats.specialAssignedCount} cupo(s) descontado(s) por condición especial
+                </span>
+              ) : (
+                'Cupos disponibles para sorteo general'
+              )}
+            </p>
           </div>
 
           <div className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">

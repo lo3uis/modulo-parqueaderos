@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { parkingService } from '../services/parkingService';
 
 interface PostulacionFormProps {
@@ -10,6 +10,7 @@ interface PostulacionFormProps {
 export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [availableSpaces, setAvailableSpaces] = useState<any[]>([]);
   const [acuse, setAcuse] = useState<{
     receiptNumber: string;
     internalCode: string;
@@ -18,6 +19,8 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     plate: string;
     unitNumber: string;
     block: string;
+    assignedSpace?: { spaceNumber: string; zone: string } | null;
+    isSpecial?: boolean;
   } | null>(null);
 
   const [formData, setFormData] = useState({
@@ -41,6 +44,18 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     requestedSpaceNumber: '',
     specialPriorityNote: '',
   });
+
+  useEffect(() => {
+    async function loadSpaces() {
+      try {
+        const spaces = await parkingService.getParkingSpaces();
+        setAvailableSpaces(spaces.filter((s) => s.vehicle_type === formData.vehicleType && s.status === 'available'));
+      } catch (e) {
+        console.error('Error cargando espacios disponibles:', e);
+      }
+    }
+    loadSpaces();
+  }, [formData.vehicleType]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -72,6 +87,8 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
         plate: formData.plate.toUpperCase(),
         unitNumber: formData.unitNumber,
         block: formData.block || 'Sin bloque',
+        assignedSpace: res.assignedSpace,
+        isSpecial: !!formData.isSpecialPriority,
       });
       if (onSuccess) onSuccess();
     } catch (err: any) {
@@ -124,18 +141,28 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
           </div>
         </div>
 
-        {formData.isSpecialPriority && (
-          <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-900 text-xs text-blue-800 dark:text-blue-300 flex items-center gap-2">
-            <span className="text-base">♿</span>
-            <span>
-              <strong>Prioridad Especial Registrada:</strong> {formData.specialPriorityType === 'salud' ? 'Salud / Movilidad Reducida' : 'Adulto Mayor / Tercera Edad'}. Esta solicitud puede ser adjudicada de forma anticipada directamente por la administración sin esperar a la rifa del sorteo.
-            </span>
+        {acuse.isSpecial && acuse.assignedSpace ? (
+          <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-xl border-2 border-amber-400 text-xs text-amber-900 dark:text-amber-200 space-y-2">
+            <div className="flex items-center gap-2 font-bold text-sm text-amber-800 dark:text-amber-300">
+              <span>⭐ CASO MUY ESPECIAL — ADJUDICACIÓN DIRECTA INMEDIATA</span>
+            </div>
+            <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
+              Puesto Físico Adjudicado:{' '}
+              <span className="font-mono text-emerald-600 dark:text-emerald-400 text-base">
+                N° {acuse.assignedSpace.spaceNumber} ({acuse.assignedSpace.zone})
+              </span>
+            </div>
+            <p className="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+              ✅ <strong>Cupo Descontado:</strong> Se quitó inmediatamente 1 cupo de los {formData.vehicleType === 'A' ? '96' : '25'} disponibles en la capacidad del sorteo general.
+              <br />
+              ✅ <strong>Exento de Proceso:</strong> Este caso queda formalmente adjudicado y <strong>no entra en la siguiente parte del proceso</strong> (no pasa por doble validación ni entra al bombo del sorteo general).
+            </p>
+          </div>
+        ) : (
+          <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300">
+            ⚠️ <strong>Importante:</strong> Tu solicitud pasará a la fase de Doble Validación (Administración + Consejo). Conserve su número de acuse.
           </div>
         )}
-
-        <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300">
-          ⚠️ <strong>Importante:</strong> Tu solicitud pasará a la fase de Doble Validación (Administración + Consejo). Conserve su número de acuse.
-        </div>
 
         <button
           onClick={() => {
@@ -348,41 +375,39 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
         )}
       </div>
 
-      {/* Sección 4: Asignación Prioritaria Especial (Salud / Tercera Edad) */}
+      {/* Sección 4: Condición Especial (Caso Muy Especial) */}
       <div className="space-y-4 pt-2 border-t border-gray-100 dark:border-gray-800">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-            <span>♿ 4. Asignación Prioritaria Especial (Opcional)</span>
-          </h3>
-          <span className="text-[11px] text-gray-500">Salud / Movilidad Reducida o Adulto Mayor</span>
-        </div>
-
-        <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/20 space-y-3">
-          <div className="flex items-center gap-2">
+        <div className="p-4 rounded-xl border-2 border-amber-400 bg-amber-50/70 dark:bg-amber-950/30 space-y-3">
+          <div className="flex items-start gap-3">
             <input
               type="checkbox"
               id="isSpecialPriority"
               name="isSpecialPriority"
               checked={formData.isSpecialPriority}
               onChange={handleChange}
-              className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+              className="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 mt-0.5 cursor-pointer"
             />
-            <label htmlFor="isSpecialPriority" className="text-xs font-semibold text-gray-800 dark:text-gray-200 cursor-pointer">
-              Solicitar asignación prioritaria directa por condición médica / movilidad o adulto mayor (sin esperar al sorteo)
-            </label>
+            <div>
+              <label htmlFor="isSpecialPriority" className="text-sm font-bold text-amber-950 dark:text-amber-200 cursor-pointer flex items-center gap-1.5">
+                <span>⭐ Condición Especial (Caso Muy Especial — Salud / Edad)</span>
+              </label>
+              <p className="text-xs text-amber-800 dark:text-amber-300 mt-0.5">
+                Al marcar esta casilla, se reserva y se descuenta inmediatamente un cupo de los {formData.vehicleType === 'A' ? '96' : '25'} disponibles. El postulante <strong>no entra en la siguiente parte del proceso</strong> (queda exento de doble validación y excluido del bombo del sorteo general).
+              </p>
+            </div>
           </div>
 
           {formData.isSpecialPriority && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs border-t border-amber-200/80 dark:border-amber-900/60">
               <div>
-                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
-                  Motivo de la Prioridad *
+                <label className="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
+                  Motivo de la Condición Especial *
                 </label>
                 <select
                   name="specialPriorityType"
                   value={formData.specialPriorityType}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 outline-none"
                 >
                   <option value="salud">🩺 Salud / Movilidad Reducida / Discapacidad</option>
                   <option value="edad">🧓 Adulto Mayor / Tercera Edad</option>
@@ -390,30 +415,46 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
               </div>
 
               <div>
-                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
-                  Puesto Específico Solicitado (Opcional)
+                <label className="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
+                  Seleccionar Puesto a Descontar (Opcional)
                 </label>
-                <input
-                  type="text"
-                  name="requestedSpaceNumber"
-                  value={formData.requestedSpaceNumber}
-                  onChange={handleChange}
-                  placeholder="Ej: 05 (Cercano a rampa o acceso)"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-                />
+                {availableSpaces.length > 0 ? (
+                  <select
+                    name="requestedSpaceNumber"
+                    value={formData.requestedSpaceNumber}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 outline-none font-mono"
+                  >
+                    <option value="">-- Asignar primer puesto accesible disponible --</option>
+                    {availableSpaces.map((s) => (
+                      <option key={s.id} value={s.space_number}>
+                        Puesto N° {s.space_number} ({s.zone}) {s.allows_oversized ? '[Grande]' : ''}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="requestedSpaceNumber"
+                    value={formData.requestedSpaceNumber}
+                    onChange={handleChange}
+                    placeholder="Ej: 05"
+                    className="w-full px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 outline-none font-mono"
+                  />
+                )}
               </div>
 
               <div>
-                <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">
-                  Justificación / Soporte Médico o Edad *
+                <label className="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
+                  Soporte / Detalle del Caso Muy Especial *
                 </label>
                 <input
                   type="text"
                   name="specialPriorityNote"
                   value={formData.specialPriorityNote}
                   onChange={handleChange}
-                  placeholder="Ej: Adulto mayor de 82 años / Carné discapacidad"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Ej: Adulto mayor de 85 años / Movilidad reducida severa"
+                  className="w-full px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 outline-none"
                   required={formData.isSpecialPriority}
                 />
               </div>

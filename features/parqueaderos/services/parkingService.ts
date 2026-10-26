@@ -156,7 +156,7 @@ export const parkingService = {
     const [spacesRes, requestsRes, assignmentsRes] = await Promise.all([
       supabase.from('parking_spaces').select('id, vehicle_type, status'),
       supabase.from('parking_requests').select('id, status'),
-      supabase.from('parking_assignments').select('id, status').eq('status', 'active'),
+      supabase.from('parking_assignments').select('id, status, assignment_type').eq('status', 'active'),
     ]);
 
     const spaces = spacesRes.data || [];
@@ -165,10 +165,13 @@ export const parkingService = {
 
     const carSpaces = spaces.filter((s) => s.vehicle_type === 'A');
     const motoSpaces = spaces.filter((s) => s.vehicle_type === 'M');
+    const specialAssignments = assignments.filter((a: any) => a.assignment_type === 'special');
 
     return {
       totalCarSpaces: carSpaces.length,
       maxCarCapacity: 96,
+      availableCarSpaces: carSpaces.filter((s) => s.status === 'available').length,
+      specialAssignedCount: specialAssignments.length,
       totalMotoSpaces: motoSpaces.length,
       maxMotoCapacity: 25,
       activeAssignments: assignments.length,
@@ -352,11 +355,56 @@ export const parkingService = {
     // 7. Generar número de acuse único consecutivo
     const receiptNumber = `ACUSE-${formData.vehicleType}-${Date.now().toString().slice(-6)}`;
 
-    // 8. Preparar nota de prioridad especial si aplica
+    // 8. Tratamiento de CONDICIÓN ESPECIAL (Caso Muy Especial)
+    // Se quita de inmediato un cupo de los 96 y NO entra en la siguiente parte del proceso (ni doble validación ni sorteo)
+    let directAssignedSpace: any = null;
+    let initialStatus: string = 'under_review';
     let paymentNote: string | null = null;
+
     if (formData.isSpecialPriority) {
-      const reasonLabel = formData.specialPriorityType === 'salud' ? 'Salud / Movilidad Reducida' : 'Adulto Mayor / Tercera Edad';
-      paymentNote = `[PRIORIDAD_ESPECIAL]: ${reasonLabel} | Puesto: ${formData.requestedSpaceNumber ? formData.requestedSpaceNumber.padStart(2, '0') : 'Por asignar'} | Justificación: ${formData.specialPriorityNote || 'Sin observación adicional'}`;
+      let spaceQuery = supabase
+        .from('parking_spaces')
+        .select('*')
+        .eq('vehicle_type', formData.vehicleType)
+        .eq('status', 'available');
+
+      if (formData.requestedSpaceNumber) {
+        const sNum = formData.requestedSpaceNumber.trim().padStart(2, '0');
+        spaceQuery = spaceQuery.eq('space_number', sNum);
+      }
+
+      const { data: spacesFound } = await spaceQuery.order('space_number', { ascending: true }).limit(1);
+
+      if (spacesFound && spacesFound.length > 0) {
+        directAssignedSpace = spacesFound[0];
+      } else {
+        // Si el puesto específico pedido no está libre, tomar el primer puesto disponible del catálogo
+        const { data: fallbackSpaces } = await supabase
+          .from('parking_spaces')
+          .select('*')
+          .eq('vehicle_type', formData.vehicleType)
+          .eq('status', 'available')
+          .order('space_number', { ascending: true })
+          .limit(1);
+        if (fallbackSpaces && fallbackSpaces.length > 0) {
+          directAssignedSpace = fallbackSpaces[0];
+        }
+      }
+
+      if (directAssignedSpace) {
+        // 8.1. Descontar inmediatamente el puesto de los 96 cupos disponibles
+        await supabase
+          .from('parking_spaces')
+          .update({ status: 'assigned' })
+          .eq('id', directAssignedSpace.id);
+
+        initialStatus = 'assigned_direct';
+        const reasonLabel = formData.specialPriorityType === 'salud' ? 'Salud / Movilidad Reducida' : 'Adulto Mayor / Tercera Edad';
+        paymentNote = `[CASO MUY ESPECIAL - CONDICIÓN ESPECIAL]: Adjudicado directamente Puesto N° ${directAssignedSpace.space_number} (${directAssignedSpace.zone}). Descontado de la capacidad de 96. Exento de doble validación y de sorteo general. Motivo: ${reasonLabel} | ${formData.specialPriorityNote || ''}`;
+      } else {
+        initialStatus = 'under_review';
+        paymentNote = `[CONDICIÓN ESPECIAL PENDIENTE DE ASIGNACIÓN]: ${formData.specialPriorityNote || ''}`;
+      }
     }
 
     // 9. Crear la postulación oficial (parking_request)
@@ -372,13 +420,32 @@ export const parkingService = {
         payment_status_snapshot: 'al_dia',
         payment_validation_note: paymentNote,
         is_direct_assignment: !!formData.isSpecialPriority,
-        documents_complete: formData.vehicleCategory === 'antiguo',
-        status: 'under_review',
+        documents_complete: true,
+        status: initialStatus,
       })
       .select()
       .single();
 
     if (reqErr) throw new Error('Error al radicar postulación: ' + reqErr.message);
+
+    // 10. Si se adjudicó por condición especial, crear la asignación activa de una vez
+    if (directAssignedSpace) {
+      await supabase.from('parking_assignments').insert({
+        raffle_id: raffleId,
+        request_id: request.id,
+        parking_space_id: directAssignedSpace.id,
+        vehicle_id: vehicleId,
+        dwelling_id: dwellingId,
+        assignment_type: 'special',
+        period: '2026-Q4',
+        quarter_start: '2026-10-01',
+        quarter_end: '2026-12-31',
+        zone_assigned: directAssignedSpace.zone,
+        status: 'active',
+        assigned_at: new Date().toISOString(),
+        expires_at: '2026-12-31',
+      });
+    }
 
     return {
       success: true,
@@ -386,6 +453,12 @@ export const parkingService = {
       internalCode,
       requestId: request.id,
       submittedAt: request.submitted_at,
+      assignedSpace: directAssignedSpace
+        ? {
+            spaceNumber: directAssignedSpace.space_number,
+            zone: directAssignedSpace.zone,
+          }
+        : null,
     };
   },
 

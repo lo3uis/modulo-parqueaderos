@@ -220,17 +220,34 @@ export function DobleValidacionPanel() {
         </div>
       )}
 
-      {/* Lista de Postulaciones */}
-      {requests.length === 0 ? (
+      {/* Aviso de Casos Muy Especiales Exentos */}
+      {requests.filter((r) => r.status === 'assigned_direct').length > 0 && (
+        <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-200 dark:border-amber-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl">⭐</span>
+            <div>
+              <span className="font-bold text-amber-900 dark:text-amber-200">
+                {requests.filter((r) => r.status === 'assigned_direct').length} Caso(s) Muy Especial(es) con Cupo Asignado
+              </span>
+              <p className="text-[11px] text-amber-800 dark:text-amber-300">
+                Estos vehículos fueron adjudicados directamente en la inscripción. Ya tienen su cupo descontado de la capacidad de 96, quedan <strong>exentos de doble validación y no entran a la rifa del sorteo</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lista de Postulaciones Sujetas a Doble Validación */}
+      {requests.filter((r) => r.status !== 'assigned_direct').length === 0 ? (
         <div className="p-10 text-center bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 text-xs text-gray-500 space-y-2">
           <span className="text-3xl block">📬</span>
-          <p className="font-semibold text-gray-700 dark:text-gray-300">No hay postulaciones registradas aún</p>
-          <p>Usa la pestaña &quot;📝 Radicar Postulación&quot; para enviar la primera solicitud y probar la validación.</p>
+          <p className="font-semibold text-gray-700 dark:text-gray-300">No hay postulaciones pendientes de doble validación</p>
+          <p>Todas las solicitudes están procesadas o fueron adjudicadas como casos especiales directamente.</p>
         </div>
       ) : (
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {requests.map((req) => {
+            {requests.filter((r) => r.status !== 'assigned_direct').map((req) => {
               const adminReview = req.reviews?.find((r: any) => r.reviewer_role === 'admin');
               const consejoReview = req.reviews?.find((r: any) => r.reviewer_role === 'consejo');
               const isEligible = req.status === 'eligible';
