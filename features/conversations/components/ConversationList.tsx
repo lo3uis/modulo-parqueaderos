@@ -229,6 +229,15 @@ export function ConversationList({ activeConversationId, userEmail }: Conversati
           <span>Parqueaderos</span>
         </button>
 
+        {/* Porteria Navigation Button */}
+        <button
+          onClick={() => router.push('/porteria')}
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 font-medium text-sm transition-colors"
+        >
+          <span className="text-base">👮‍♂️</span>
+          <span>Portería / Vigilancia</span>
+        </button>
+
         {/* Toggle Conversations Button */}
         <button
           onClick={() => setShowConversations(!showConversations)}

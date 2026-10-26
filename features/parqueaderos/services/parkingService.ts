@@ -541,4 +541,100 @@ export const parkingService = {
 
     return resultado;
   },
+
+  // PORTERÍA: Buscar placa y verificar asignación activa
+  async verifyPlate(plateToSearch: string) {
+    const supabase = createClient();
+    const cleanPlate = plateToSearch.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // 1. Buscar vehículo por placa
+    const { data: vehicle, error: vErr } = await supabase
+      .from('vehicles')
+      .select('*, dwelling:dwellings(*), resident:residents(*)')
+      .eq('plate', cleanPlate)
+      .maybeSingle();
+
+    if (vErr) throw new Error('Error al buscar vehículo: ' + vErr.message);
+
+    if (!vehicle) {
+      return {
+        found: false,
+        authorized: false,
+        plate: cleanPlate,
+        message: 'Placa no registrada en el sistema del conjunto.',
+      };
+    }
+
+    // 2. Buscar asignación activa en el trimestre actual
+    const { data: assignment, error: aErr } = await supabase
+      .from('parking_assignments')
+      .select('*, parking_space:parking_spaces(*)')
+      .eq('vehicle_id', vehicle.id)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (aErr) throw new Error('Error al consultar asignación: ' + aErr.message);
+
+    if (!assignment) {
+      return {
+        found: true,
+        authorized: false,
+        plate: cleanPlate,
+        vehicle,
+        message: 'Vehículo registrado pero SIN asignación vigente en este trimestre.',
+      };
+    }
+
+    return {
+      found: true,
+      authorized: true,
+      plate: cleanPlate,
+      vehicle,
+      assignment,
+      space: assignment.parking_space,
+      message: 'Vehículo AUTORIZADO con puesto asignado.',
+    };
+  },
+
+  // PORTERÍA: Registrar una incidencia o amonestación
+  async reportIncident(data: {
+    parkingSpaceId: string;
+    observedPlate: string;
+    expectedVehicleId?: string;
+    incidentType: string;
+    hasWarning: boolean;
+    notes: string;
+  }) {
+    const supabase = createClient();
+    const cleanPlate = data.observedPlate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    const { data: incident, error } = await supabase
+      .from('incidents')
+      .insert({
+        parking_space_id: data.parkingSpaceId,
+        observed_plate: cleanPlate,
+        expected_vehicle_id: data.expectedVehicleId || null,
+        incident_type: data.incidentType,
+        has_warning: data.hasWarning,
+        notes: data.notes,
+      })
+      .select()
+      .single();
+
+    if (error) throw new Error('Error al registrar incidencia: ' + error.message);
+    return incident;
+  },
+
+  // PORTERÍA: Obtener incidencias recientes
+  async getRecentIncidents() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('incidents')
+      .select('*, parking_space:parking_spaces(*)')
+      .order('occurred_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw new Error(error.message);
+    return data || [];
+  },
 };

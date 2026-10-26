@@ -61,6 +61,12 @@ export default function ParqueaderosPage() {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/porteria"
+              className="px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
+            >
+              👮‍♂️ Portería
+            </Link>
+            <Link
               href="/chat"
               className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
             >
