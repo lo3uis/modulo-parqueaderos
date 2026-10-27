@@ -282,6 +282,12 @@ export function DobleValidacionPanel() {
                           🚨 {req.warningsCount} AMONESTACIÓN(ES) EN PORTERÍA
                         </span>
                       )}
+                      {req.has_white_ballot && (
+                        <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 flex items-center gap-1 shadow-sm">
+                          <span>🎟️ Balota Blanca</span>
+                          <span className="text-[9px] font-normal">(Prelación Condicionada)</span>
+                        </span>
+                      )}
                     </div>
 
                     <div className="text-gray-600 dark:text-gray-400">
@@ -473,6 +479,20 @@ export function DobleValidacionPanel() {
                 </div>
                 <p className="text-[10px] font-bold text-rose-600 dark:text-rose-400 pl-5">
                   Recomendación: Descalificar por violación previa de reglamento de parqueaderos.
+                </p>
+              </div>
+            )}
+
+            {/* Advertencia especial de Balota Blanca */}
+            {selectedRequest.has_white_ballot && (
+              <div className="p-3.5 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-xl text-xs space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-200">
+                  <span>🎟️ Solicitud con Balota Blanca (Prelación Condicionada)</span>
+                </div>
+                <p className="text-[11px] text-purple-800 dark:text-purple-300 leading-relaxed">
+                  Este postulante cuenta con derecho a <strong>Asignación Directa</strong> por no haber obtenido cupo en el sorteo anterior.
+                  <br />
+                  ⚠️ <strong>Regla Imputable:</strong> Si es descalificado por causa imputable al propietario o arrendatario (mora en administración, SOAT vencido sin subsanar o amonestación), <strong>la balota blanca será revocada definitivamente</strong> y perderá el derecho de prelación en este periodo.
                 </p>
               </div>
             )}

@@ -23,6 +23,9 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     isSpecial?: boolean;
   } | null>(null);
 
+  const [detectedWhiteBallot, setDetectedWhiteBallot] = useState<any | null>(null);
+  const [checkingWhiteBallot, setCheckingWhiteBallot] = useState(false);
+
   const [formData, setFormData] = useState({
     unitNumber: '',
     zone: '',
@@ -90,6 +93,45 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     }
     loadSpaces();
   }, [formData.vehicleType]);
+
+  // Verificar en tiempo real si la placa posee Balota Blanca activa
+  useEffect(() => {
+    const cleanPlate = formData.plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanPlate.length >= 5) {
+      let isMounted = true;
+      setCheckingWhiteBallot(true);
+      const timer = setTimeout(async () => {
+        try {
+          const wb = await parkingService.checkActiveWhiteBallot(cleanPlate);
+          if (isMounted) {
+            setDetectedWhiteBallot(wb);
+            if (wb) {
+              setFormData((prev) => ({
+                ...prev,
+                unitNumber: prev.unitNumber || wb.dwelling?.unit_number || '',
+                block: prev.block || wb.dwelling?.block || '',
+                brand: prev.brand || wb.vehicle?.brand || '',
+                model: prev.model || wb.frozen_model || wb.vehicle?.model || '',
+                fullName: prev.fullName || wb.resident?.full_name || '',
+                documentId: prev.documentId || wb.resident?.document_id || '',
+              }));
+            }
+          }
+        } catch (err) {
+          console.error('Error al consultar balota blanca:', err);
+        } finally {
+          if (isMounted) setCheckingWhiteBallot(false);
+        }
+      }, 350);
+
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    } else {
+      setDetectedWhiteBallot(null);
+    }
+  }, [formData.plate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -201,6 +243,7 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
         <button
           onClick={() => {
             setAcuse(null);
+            setDetectedWhiteBallot(null);
             setFormData({
               unitNumber: '',
               zone: '',
@@ -396,6 +439,36 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             </select>
           </div>
         </div>
+
+        {/* Notificación de Balota Blanca Detectada */}
+        {checkingWhiteBallot && (
+          <div className="text-[11px] text-gray-500 flex items-center gap-1.5 animate-pulse">
+            <span>🔍 Verificando registro de Balota Blanca para la placa...</span>
+          </div>
+        )}
+
+        {detectedWhiteBallot && (
+          <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 border-2 border-emerald-400 dark:border-emerald-800 rounded-xl text-xs space-y-1.5 shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🎟️</span>
+              <span className="font-extrabold text-emerald-950 dark:text-emerald-100">
+                ¡Balota Blanca Detectada del Periodo Anterior!
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 text-[10px] font-bold">
+                Derecho de Prelación Activo
+              </span>
+            </div>
+            <p className="text-emerald-800 dark:text-emerald-300 text-xs leading-relaxed">
+              La placa <strong>[{detectedWhiteBallot.frozen_plate}]</strong> cuenta con beneficio de <strong>Asignación Directa</strong> de parqueadero sin entrar en el bombo de azar.
+            </p>
+            <div className="p-2.5 bg-white/80 dark:bg-gray-900/80 rounded-lg border border-emerald-200 dark:border-emerald-900 text-[11px] text-gray-700 dark:text-gray-300 flex items-start gap-1.5">
+              <span>⚠️</span>
+              <span>
+                <strong>Regla de Doble Validación:</strong> La adjudicación directa queda condicionada a que la Administración y el Consejo aprueben que la vivienda esté a Paz y Salvo y el SOAT vigente. Si la solicitud es descalificada por causa imputable al titular, la balota blanca será revocada definitivamente.
+              </span>
+            </div>
+          </div>
+        )}
 
         {formData.vehicleType === 'A' && (
           <div className="flex items-center gap-2 pt-1 text-xs">

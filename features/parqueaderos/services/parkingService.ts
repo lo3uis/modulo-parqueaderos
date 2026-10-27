@@ -113,10 +113,31 @@ export const parkingService = {
         onConflict: 'request_id,reason_id',
       });
 
-      // Marcar solicitud como descalificada
+      // Marcar solicitud como descalificada.
+      // Regla de Negocio: Si la descalificación es imputable al residente/arrendatario
+      // y la solicitud tenía Balota Blanca, se revoca la balota blanca (no_usada_incumple)
+      // y se borra la prelación de la solicitud.
+      const { data: reqData } = await supabase
+        .from('parking_requests')
+        .select('has_white_ballot, vehicle:vehicles(plate)')
+        .eq('id', params.requestId)
+        .single();
+
+      if (reqData?.has_white_ballot && (reqData as any)?.vehicle?.plate) {
+        await supabase
+          .from('white_ballots')
+          .update({ status: 'no_usada_incumple' })
+          .eq('frozen_plate', (reqData as any).vehicle.plate)
+          .eq('status', 'vigente');
+      }
+
       await supabase
         .from('parking_requests')
-        .update({ status: 'disqualified' })
+        .update({
+          status: 'disqualified',
+          has_white_ballot: false,
+          is_direct_assignment: false,
+        })
         .eq('id', params.requestId);
 
       return { status: 'disqualified' };
@@ -440,6 +461,25 @@ export const parkingService = {
       }
     }
 
+    // 8.5. Si no es condición especial, verificar si la placa tiene Balota Blanca vigente del periodo anterior
+    let hasWhiteBallot = false;
+    let isDirectAssignment = !!formData.isSpecialPriority;
+
+    if (!formData.isSpecialPriority) {
+      const { data: activeWb } = await supabase
+        .from('white_ballots')
+        .select('id, frozen_plate')
+        .eq('frozen_plate', cleanPlate)
+        .eq('status', 'vigente')
+        .maybeSingle();
+
+      if (activeWb) {
+        hasWhiteBallot = true;
+        isDirectAssignment = true;
+        paymentNote = `[PRELACIÓN BALOTA BLANCA]: Postulado con Balota Blanca activa del periodo anterior. Asignación directa condicionada a aprobación en Doble Validación.`;
+      }
+    }
+
     // 9. Crear la postulación oficial (parking_request)
     const { data: request, error: reqErr } = await supabase
       .from('parking_requests')
@@ -452,7 +492,8 @@ export const parkingService = {
         residency_type_snapshot: formData.residencyType,
         payment_status_snapshot: 'al_dia',
         payment_validation_note: paymentNote,
-        is_direct_assignment: !!formData.isSpecialPriority,
+        is_direct_assignment: isDirectAssignment,
+        has_white_ballot: hasWhiteBallot,
         documents_complete: true,
         status: initialStatus,
       })
@@ -512,6 +553,28 @@ export const parkingService = {
 
     if (error) throw new Error(error.message);
     return data || [];
+  },
+
+  // Verificar si una placa específica posee una Balota Blanca vigente
+  async checkActiveWhiteBallot(plate: string) {
+    const supabase = createClient();
+    const cleanPlate = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (!cleanPlate || cleanPlate.length < 5) return null;
+
+    const { data, error } = await supabase
+      .from('white_ballots')
+      .select(`
+        *,
+        resident:residents(*),
+        dwelling:dwellings(*),
+        vehicle:vehicles(*)
+      `)
+      .eq('frozen_plate', cleanPlate)
+      .eq('status', 'vigente')
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return data;
   },
 
   // Obtener asignaciones activas con datos de puesto y vehículo
@@ -628,6 +691,15 @@ export const parkingService = {
       // Actualizar espacio y postulación
       await supabase.from('parking_spaces').update({ status: 'assigned' }).eq('id', d.spaceId);
       await supabase.from('parking_requests').update({ status: 'assigned_direct' }).eq('id', req.id);
+
+      // Si la asignación directa correspondió a una Balota Blanca, marcarla como 'usada'
+      if (req.has_white_ballot || req.vehicle?.plate) {
+        await supabase
+          .from('white_ballots')
+          .update({ status: 'usada', target_raffle_id: raffle.id })
+          .eq('frozen_plate', req.vehicle?.plate || '')
+          .eq('status', 'vigente');
+      }
     }
 
     // 6. Persistir Asignaciones del Sorteo General
