@@ -33,6 +33,17 @@ export function DobleValidacionPanel() {
   const [assigningSpecial, setAssigningSpecial] = useState(false);
   const [actionSuccessMsg, setActionSuccessMsg] = useState<string | null>(null);
 
+  // Estado para visor y cotejo de documentos (SOAT y Tarjeta de Propiedad)
+  const [previewDoc, setPreviewDoc] = useState<{
+    type: 'soat' | 'tarjeta_propiedad';
+    url: string;
+    plate: string;
+    brand: string;
+    residentName: string;
+    dwelling: string;
+    expiryDate?: string;
+  } | null>(null);
+
   const handleOpenSpecialAssignModal = async (req: any) => {
     setSpecialAssignReq(req);
     setActionSuccessMsg(null);
@@ -274,7 +285,71 @@ export function DobleValidacionPanel() {
                     </div>
 
                     <div className="text-gray-600 dark:text-gray-400">
-                      <strong>{req.resident?.full_name}</strong> • {req.dwelling?.unit_number} ({req.dwelling?.zone}) • {req.residency_type_snapshot}
+                      <strong>{req.resident?.full_name}</strong> • {req.dwelling?.block ? `${req.dwelling?.block} - ` : ''}{req.dwelling?.unit_number} • {req.residency_type_snapshot}
+                    </div>
+
+                    {/* Botones de Cotejo de Documentos (SOAT y Tarjeta) */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      {req.vehicle?.documents?.find((d: any) => d.document_type === 'tarjeta_propiedad')?.file_url ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const doc = req.vehicle.documents.find((d: any) => d.document_type === 'tarjeta_propiedad');
+                            setPreviewDoc({
+                              type: 'tarjeta_propiedad',
+                              url: doc.file_url,
+                              plate: req.vehicle.plate,
+                              brand: req.vehicle.brand || 'N/A',
+                              residentName: req.resident?.full_name || 'N/A',
+                              dwelling: `${req.dwelling?.block || ''} - ${req.dwelling?.unit_number || ''}`,
+                            });
+                          }}
+                          className="px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900 font-medium text-[11px] flex items-center gap-1 transition"
+                        >
+                          <span>📄 Tarjeta Propiedad</span>
+                          <span className="font-bold text-blue-600 text-[10px]">👁️ Ver</span>
+                        </button>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-400 text-[10px]">
+                          Sin Tarjeta adjunta
+                        </span>
+                      )}
+
+                      {req.vehicle?.documents?.find((d: any) => d.document_type === 'soat')?.file_url ? (
+                        (() => {
+                          const doc = req.vehicle.documents.find((d: any) => d.document_type === 'soat');
+                          const isExpired = doc.expiry_date && new Date(doc.expiry_date) < new Date();
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPreviewDoc({
+                                  type: 'soat',
+                                  url: doc.file_url,
+                                  plate: req.vehicle.plate,
+                                  brand: req.vehicle.brand || 'N/A',
+                                  residentName: req.resident?.full_name || 'N/A',
+                                  dwelling: `${req.dwelling?.block || ''} - ${req.dwelling?.unit_number || ''}`,
+                                  expiryDate: doc.expiry_date,
+                                });
+                              }}
+                              className={`px-2.5 py-1 rounded border font-medium text-[11px] flex items-center gap-1 transition ${
+                                isExpired
+                                  ? 'bg-rose-50 text-rose-700 border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 hover:bg-rose-100'
+                                  : 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 hover:bg-emerald-100'
+                              }`}
+                            >
+                              <span>🛡️ SOAT {doc.expiry_date ? `(Vence: ${doc.expiry_date})` : ''}</span>
+                              <span className="font-bold text-[10px]">👁️ Ver</span>
+                              {isExpired && <span className="font-extrabold text-[10px] text-rose-600">[VENCIDO]</span>}
+                            </button>
+                          );
+                        })()
+                      ) : (
+                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-400 text-[10px]">
+                          Sin SOAT adjunto
+                        </span>
+                      )}
                     </div>
 
                     {/* Estado de Aprobaciones */}
@@ -419,15 +494,62 @@ export function DobleValidacionPanel() {
                   <span>1. Pagos de administración al día a la fecha de corte</span>
                 </label>
 
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={checklist.docsApproved}
-                    onChange={(e) => setChecklist({ ...checklist, docsApproved: e.target.checked })}
-                    className="rounded text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span>2. SOAT y Tarjeta de propiedad vigentes (o vehículo antiguo verificado)</span>
-                </label>
+                <div className="space-y-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checklist.docsApproved}
+                      onChange={(e) => setChecklist({ ...checklist, docsApproved: e.target.checked })}
+                      className="rounded text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span>
+                      2. SOAT y Tarjeta de propiedad cotejados (corresponden a la placa [<strong>{selectedRequest.vehicle?.plate}</strong>] y al titular)
+                    </span>
+                  </label>
+
+                  {/* Acceso directo a ver documentos en el modal */}
+                  <div className="flex gap-2 pl-6 pt-0.5">
+                    {selectedRequest.vehicle?.documents?.find((d: any) => d.document_type === 'tarjeta_propiedad')?.file_url && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const doc = selectedRequest.vehicle.documents.find((d: any) => d.document_type === 'tarjeta_propiedad');
+                          setPreviewDoc({
+                            type: 'tarjeta_propiedad',
+                            url: doc.file_url,
+                            plate: selectedRequest.vehicle.plate,
+                            brand: selectedRequest.vehicle.brand || 'N/A',
+                            residentName: selectedRequest.resident?.full_name || 'N/A',
+                            dwelling: `${selectedRequest.dwelling?.block || ''} - ${selectedRequest.dwelling?.unit_number || ''}`,
+                          });
+                        }}
+                        className="text-[10px] text-blue-600 dark:text-blue-400 font-bold hover:underline"
+                      >
+                        👁️ Abrir Tarjeta de Propiedad
+                      </button>
+                    )}
+                    {selectedRequest.vehicle?.documents?.find((d: any) => d.document_type === 'soat')?.file_url && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const doc = selectedRequest.vehicle.documents.find((d: any) => d.document_type === 'soat');
+                          setPreviewDoc({
+                            type: 'soat',
+                            url: doc.file_url,
+                            plate: selectedRequest.vehicle.plate,
+                            brand: selectedRequest.vehicle.brand || 'N/A',
+                            residentName: selectedRequest.resident?.full_name || 'N/A',
+                            dwelling: `${selectedRequest.dwelling?.block || ''} - ${selectedRequest.dwelling?.unit_number || ''}`,
+                            expiryDate: doc.expiry_date,
+                          });
+                        }}
+                        className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline"
+                      >
+                        👁️ Abrir SOAT
+                      </button>
+                    )}
+                  </div>
+                </div>
 
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -617,6 +739,91 @@ export function DobleValidacionPanel() {
                 className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-sm disabled:opacity-50 flex items-center gap-1.5"
               >
                 <span>{assigningSpecial ? 'Adjudicando...' : '⚡ Confirmar Adjudicación Inmediata'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Visor y Cotejo Documental (SOAT y Tarjeta de Propiedad) */}
+      {previewDoc && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white dark:bg-gray-900 max-w-4xl w-full rounded-2xl border border-gray-200 dark:border-gray-800 p-6 space-y-4 shadow-2xl animate-scaleUp max-h-[90vh] flex flex-col">
+            <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-3 shrink-0">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                  Cotejo y Verificación Documental
+                </span>
+                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <span>{previewDoc.type === 'soat' ? '🛡️ SOAT (Seguro Obligatorio)' : '📄 Tarjeta de Propiedad / Licencia'}</span>
+                  <span className="font-mono text-blue-600 dark:text-blue-400">[{previewDoc.plate}]</span>
+                </h3>
+              </div>
+              <button
+                onClick={() => setPreviewDoc(null)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 overflow-y-auto grow p-1">
+              {/* Vista del documento adjunto */}
+              <div className="md:col-span-2 bg-gray-100 dark:bg-gray-950 rounded-xl p-2 flex items-center justify-center min-h-[300px] border border-gray-200 dark:border-gray-800 overflow-hidden">
+                {previewDoc.url.startsWith('data:application/pdf') || previewDoc.url.endsWith('.pdf') ? (
+                  <iframe src={previewDoc.url} className="w-full h-full min-h-[420px] rounded-lg" title="PDF Documento" />
+                ) : (
+                  <img src={previewDoc.url} alt="Documento del vehículo" className="max-h-[420px] w-auto object-contain rounded-lg shadow-sm" />
+                )}
+              </div>
+
+              {/* Panel de Cotejo con datos del vehículo */}
+              <div className="space-y-3 text-xs bg-gray-50 dark:bg-gray-800/40 p-4 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between">
+                <div className="space-y-2.5">
+                  <h4 className="font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider text-[10px] border-b pb-1">
+                    Datos Registrados en la Postulación
+                  </h4>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Placa Registrada:</span>
+                    <span className="font-mono font-bold text-base text-blue-600 dark:text-blue-400">
+                      [{previewDoc.plate}]
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Marca / Línea:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{previewDoc.brand}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Titular / Residente:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{previewDoc.residentName}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Vivienda:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{previewDoc.dwelling}</span>
+                  </div>
+                  {previewDoc.expiryDate && (
+                    <div className="p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                      <span className="text-gray-500 block text-[10px]">Vencimiento del SOAT:</span>
+                      <span className={`font-mono font-bold ${new Date(previewDoc.expiryDate) < new Date() ? 'text-rose-600 animate-pulse' : 'text-emerald-600'}`}>
+                        {previewDoc.expiryDate} {new Date(previewDoc.expiryDate) < new Date() ? '(¡VENCIDO!)' : '(Vigente)'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 rounded-lg border border-amber-200 dark:border-amber-900 text-[10px] text-amber-800 dark:text-amber-300">
+                  ⚠️ <strong>Criterio de Control:</strong> Verifique que los datos del documento coincidan exactamente. Si el documento no coincide con el vehículo o está vencido, rechace la validación.
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2 border-t border-gray-100 dark:border-gray-800 shrink-0">
+              <button
+                type="button"
+                onClick={() => setPreviewDoc(null)}
+                className="px-4 py-2 rounded-lg bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 font-semibold text-xs transition"
+              >
+                Cerrar Visor
               </button>
             </div>
           </div>

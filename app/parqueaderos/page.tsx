@@ -351,6 +351,10 @@ export default function ParqueaderosPage() {
                 <span className="text-blue-500 font-bold">♿</span>
                 <span><strong>Asignación Prioritaria (Salud / Adulto Mayor):</strong> Debe solicitarse expresamente desde la fase de inscripción con su soporte médico o acreditación de edad. La Administración y el Consejo validan el documento y adjudican el puesto anticipadamente de forma pública para no entrar en controversia, descontándolo del bombo general antes del sorteo.</span>
               </li>
+              <li className="flex gap-2">
+                <span className="text-amber-500 font-bold">🗓️</span>
+                <span><strong>Calendario por Festividades de Fin de Año:</strong> Las inscripciones deben publicarse el último jueves del mes de noviembre y el sorteo se realiza en la segunda semana de diciembre el día jueves. Los puestos adjudicados tienen vigencia a partir del 1 de enero para el primer trimestre del año siguiente (Q1).</span>
+              </li>
             </ul>
           </div>
         )}

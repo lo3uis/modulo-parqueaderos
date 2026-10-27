@@ -87,6 +87,21 @@ export interface Vehicle {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  documents?: VehicleDocument[];
+}
+
+// 3.1. Documentos del Vehículo (SOAT y Tarjeta de Propiedad)
+export interface VehicleDocument {
+  id: string;
+  vehicle_id: string;
+  document_type: 'tarjeta_propiedad' | 'soat';
+  file_url: string;
+  expiry_date?: string;
+  review_status: 'pending' | 'approved' | 'rejected';
+  reviewed_by?: string;
+  reviewed_at?: string;
+  rejection_notes?: string;
+  created_at: string;
 }
 
 // 4. Espacio de parqueadero

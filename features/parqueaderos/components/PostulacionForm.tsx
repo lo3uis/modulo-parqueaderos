@@ -43,7 +43,41 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
     specialPriorityType: 'salud' as 'salud' | 'edad',
     requestedSpaceNumber: '',
     specialPriorityNote: '',
+    propertyCardFile: '',
+    propertyCardFileName: '',
+    soatFile: '',
+    soatFileName: '',
+    soatExpiryDate: '',
   });
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, docType: 'tarjeta' | 'soat') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('El archivo supera los 5MB permitidos. Por favor sube un documento más liviano.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      if (docType === 'tarjeta') {
+        setFormData((prev) => ({
+          ...prev,
+          propertyCardFile: base64,
+          propertyCardFileName: file.name,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          soatFile: base64,
+          soatFileName: file.name,
+        }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     async function loadSpaces() {
@@ -187,6 +221,11 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
               specialPriorityType: 'salud',
               requestedSpaceNumber: '',
               specialPriorityNote: '',
+              propertyCardFile: '',
+              propertyCardFileName: '',
+              soatFile: '',
+              soatFileName: '',
+              soatExpiryDate: '',
             });
           }}
           className="w-full py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold transition"
@@ -373,6 +412,84 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             </label>
           </div>
         )}
+
+        {/* Carga y Validación de Documentos (SOAT y Tarjeta de Propiedad) */}
+        <div className="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/40 space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-gray-800 dark:text-gray-200 text-xs flex items-center gap-1.5">
+              <span>📄 Documentos Obligatorios del Vehículo (Cotejo de Placa y Titular)</span>
+            </span>
+            <span className="text-[10px] text-gray-500">PDF, JPG o PNG (Máx 5MB)</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            {/* Tarjeta de Propiedad */}
+            <div className="p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 space-y-2">
+              <label className="block font-semibold text-gray-700 dark:text-gray-300">
+                1. Tarjeta de Propiedad / Licencia de Tránsito *
+              </label>
+              <input
+                type="file"
+                accept=".pdf,image/*"
+                onChange={(e) => handleFileUpload(e, 'tarjeta')}
+                className="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+              />
+              {formData.propertyCardFileName ? (
+                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                  <span>✓ Archivo cargado:</span>
+                  <span className="font-mono truncate">{formData.propertyCardFileName}</span>
+                </div>
+              ) : (
+                <p className="text-[10px] text-gray-400">Adjunta el archivo escaneado o foto legible</p>
+              )}
+            </div>
+
+            {/* SOAT */}
+            <div className="p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 space-y-2">
+              <label className="block font-semibold text-gray-700 dark:text-gray-300">
+                2. SOAT (Seguro Obligatorio Vigente) *
+              </label>
+              <input
+                type="file"
+                accept=".pdf,image/*"
+                onChange={(e) => handleFileUpload(e, 'soat')}
+                className="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+              />
+              {formData.soatFileName && (
+                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                  <span>✓ Archivo cargado:</span>
+                  <span className="font-mono truncate">{formData.soatFileName}</span>
+                </div>
+              )}
+
+              <div className="pt-1">
+                <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                  Fecha de Vencimiento del SOAT:
+                </label>
+                <input
+                  type="date"
+                  name="soatExpiryDate"
+                  value={formData.soatExpiryDate}
+                  onChange={handleChange}
+                  className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-gray-700 bg-transparent text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                {formData.soatExpiryDate && (
+                  <div className="mt-1">
+                    {new Date(formData.soatExpiryDate) < new Date() ? (
+                      <span className="text-[10px] text-rose-600 font-bold block animate-pulse">
+                        ⚠️ ATENCIÓN: El SOAT figura VENCIDO. No podrá ser habilitado.
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-emerald-600 font-semibold block">
+                        ✓ SOAT Vigente al momento de la postulación
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Sección 4: Condición Especial (Caso Muy Especial) */}

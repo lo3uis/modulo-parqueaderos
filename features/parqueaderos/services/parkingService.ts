@@ -58,7 +58,7 @@ export const parkingService = {
         *,
         resident:residents(*),
         dwelling:dwellings(*),
-        vehicle:vehicles(*),
+        vehicle:vehicles(*, documents:vehicle_documents(*)),
         reviews:request_reviews(*)
       `)
       .order('submitted_at', { ascending: false });
@@ -201,6 +201,11 @@ export const parkingService = {
     specialPriorityType?: 'salud' | 'edad';
     requestedSpaceNumber?: string;
     specialPriorityNote?: string;
+    propertyCardFile?: string;
+    propertyCardFileName?: string;
+    soatFile?: string;
+    soatFileName?: string;
+    soatExpiryDate?: string;
   }) {
     const supabase = createClient();
 
@@ -350,6 +355,34 @@ export const parkingService = {
         .single();
       if (vErr) throw new Error('Error al registrar vehículo: ' + vErr.message);
       vehicleId = newVehicle.id;
+    }
+
+    // 6.5. Registrar Documentos del Vehículo (Tarjeta de Propiedad y SOAT)
+    if (formData.propertyCardFile) {
+      try {
+        await supabase.from('vehicle_documents').insert({
+          vehicle_id: vehicleId,
+          document_type: 'tarjeta_propiedad',
+          file_url: formData.propertyCardFile,
+          review_status: 'pending',
+        });
+      } catch (err) {
+        console.warn('No se pudo registrar tarjeta en vehicle_documents (RLS):', err);
+      }
+    }
+
+    if (formData.soatFile) {
+      try {
+        await supabase.from('vehicle_documents').insert({
+          vehicle_id: vehicleId,
+          document_type: 'soat',
+          file_url: formData.soatFile,
+          expiry_date: formData.soatExpiryDate || null,
+          review_status: 'pending',
+        });
+      } catch (err) {
+        console.warn('No se pudo registrar SOAT en vehicle_documents (RLS):', err);
+      }
     }
 
     // 7. Generar número de acuse único consecutivo

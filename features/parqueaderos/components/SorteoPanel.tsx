@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { parkingService } from '../services/parkingService';
+import { getYearEndRaffleSchedule } from '../lib/holidayCalendar';
 
 export function SorteoPanel() {
   const [vehicleType, setVehicleType] = useState<'A' | 'M'>('A');
@@ -12,6 +13,9 @@ export function SorteoPanel() {
   const [eligibleCount, setEligibleCount] = useState(0);
   const [lastResult, setLastResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showPrintReport, setShowPrintReport] = useState(false);
+
+  const holidaySchedule = getYearEndRaffleSchedule(2026);
 
   const loadData = async () => {
     try {
@@ -60,18 +64,54 @@ export function SorteoPanel() {
 
   return (
     <div className="space-y-6">
-      {/* Selector de Tipo de Vehículo */}
+      {/* Banner de Calendario Festividades de Fin de Año (Punto 2) */}
+      <div className="p-5 bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-yellow-950/20 rounded-2xl border-2 border-amber-300 dark:border-amber-800 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-start gap-3.5">
+          <span className="text-3xl">🗓️</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-amber-950 dark:text-amber-100 text-sm">
+                Calendario Especial por Festividades de Fin de Año ({holidaySchedule.year})
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200 font-bold text-[10px]">
+                Regla Reglamentaria
+              </span>
+            </div>
+            <p className="text-xs text-amber-900/90 dark:text-amber-200/90 leading-relaxed max-w-3xl">
+              Por temas de festividades de fin de año, las inscripciones deben publicarse el <strong>último jueves del mes de noviembre ({holidaySchedule.publicationFormatted})</strong> y el sorteo se realiza en la segunda semana de diciembre el <strong>día jueves ({holidaySchedule.raffleFormatted})</strong> con vigencia para {holidaySchedule.targetPeriod}.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 text-center text-xs">
+          <div className="px-3 py-1.5 rounded-xl bg-white/80 dark:bg-gray-900/80 border border-amber-200 dark:border-amber-800 font-mono font-bold text-amber-900 dark:text-amber-300">
+            📢 Inscripción: {holidaySchedule.publicationIso}
+          </div>
+          <div className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-mono font-bold shadow-sm">
+            🎲 Sorteo: {holidaySchedule.raffleIso}
+          </div>
+        </div>
+      </div>
+
+      {/* Selector de Tipo de Vehículo y Acciones */}
       <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
-            Sorteo Trimestral Oficial — Periodo 2026-Q4
+            Sorteo Trimestral Oficial — Periodo 2026-Q4 / 2027-Q1
           </h2>
           <p className="text-xs text-gray-500 mt-1">
             Algoritmo determinista Fisher-Yates, asignación directa por balota blanca previa y rotación de zonas.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setShowPrintReport(true)}
+            className="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+          >
+            <span>🖨️ Exportar / Imprimir PDF Oficial</span>
+          </button>
+
           <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl text-xs font-semibold">
             <button
               onClick={() => setVehicleType('A')}
@@ -306,6 +346,204 @@ export function SorteoPanel() {
           </div>
         )}
       </div>
+
+      {/* Modal / Vista de Impresión y Exportación PDF Oficial (Punto 4) */}
+      {showPrintReport && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col p-4 md:p-8 overflow-y-auto animate-fadeIn">
+          {/* Barra de Controles superior (no se imprime) */}
+          <div className="max-w-5xl w-full mx-auto flex items-center justify-between pb-4 print:hidden">
+            <button
+              type="button"
+              onClick={() => setShowPrintReport(false)}
+              className="px-4 py-2 rounded-xl bg-gray-800 text-white font-semibold text-xs hover:bg-gray-700 transition flex items-center gap-1.5"
+            >
+              <span>← Volver al Panel</span>
+            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-300">
+                Formato Oficial de Impresión / Guardado en PDF
+              </span>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-lg flex items-center gap-2"
+              >
+                <span>🖨️ Mandar a Imprimir / Guardar como PDF</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Hoja Imprimible Oficial (Estilo Formal de Copropiedad) */}
+          <div className="max-w-5xl w-full mx-auto bg-white text-gray-900 rounded-2xl p-8 md:p-12 shadow-2xl space-y-8 print:p-0 print:shadow-none print:rounded-none">
+            {/* Membrete Institucional */}
+            <div className="border-b-2 border-gray-900 pb-5 text-center space-y-1">
+              <span className="text-[11px] font-bold tracking-widest uppercase text-gray-500 block">
+                CONJUNTO RESIDENCIAL — PROPIEDAD HORIZONTAL
+              </span>
+              <h1 className="text-xl md:text-2xl font-extrabold uppercase tracking-tight text-gray-950">
+                Acta Oficial de Asignación y Padrón de Parqueaderos
+              </h1>
+              <p className="text-xs font-semibold text-gray-700">
+                Periodo Asignado: <strong>2026-Q4 / 2027-Q1</strong> • Categoría: <strong>{vehicleType === 'A' ? 'Vehículos Automóviles (Carros)' : 'Motocicletas'}</strong>
+              </p>
+              <div className="text-[10px] text-gray-500 pt-1">
+                Expedición: {new Date().toLocaleString('es-CO')} • Sistema Auditor Determinista PRP v2
+              </div>
+            </div>
+
+            {/* Cuadro de Regla Especial de Fin de Año (Punto 2) */}
+            <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-300 text-xs space-y-1">
+              <div className="font-bold text-gray-900 flex items-center gap-2">
+                <span>🗓️ REGLAMENTACIÓN ESPECIAL POR FESTIVIDADES DE FIN DE AÑO:</span>
+              </div>
+              <p className="text-[11px] text-gray-700 leading-relaxed">
+                Por temas de festividades de fin de año, las inscripciones fueron publicadas el <strong>último jueves de noviembre ({holidaySchedule.publicationFormatted})</strong> y el sorteo oficial se realiza el <strong>segundo jueves de diciembre ({holidaySchedule.raffleFormatted})</strong> con vigencia para el primer trimestre del año siguiente ({holidaySchedule.targetPeriod}).
+              </p>
+            </div>
+
+            {/* Resumen de Capacidad y Asignaciones */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs">
+              <div className="p-3 rounded-lg border border-gray-300 bg-gray-50/50">
+                <span className="text-[10px] text-gray-500 block">Capacidad Total Oficial:</span>
+                <span className="text-lg font-bold text-gray-950">
+                  {vehicleType === 'A' ? '96 Puestos' : '25 Puestos'}
+                </span>
+              </div>
+              <div className="p-3 rounded-lg border border-gray-300 bg-gray-50/50">
+                <span className="text-[10px] text-gray-500 block">Condición Especial (Salud/Edad):</span>
+                <span className="text-lg font-bold text-blue-700">
+                  {assignments.filter((a) => a.assignment_type === 'special').length} Cupos
+                </span>
+              </div>
+              <div className="p-3 rounded-lg border border-gray-300 bg-gray-50/50">
+                <span className="text-[10px] text-gray-500 block">Directas (Balota Blanca):</span>
+                <span className="text-lg font-bold text-purple-700">
+                  {assignments.filter((a) => a.assignment_type === 'direct').length} Cupos
+                </span>
+              </div>
+              <div className="p-3 rounded-lg border border-gray-300 bg-gray-50/50">
+                <span className="text-[10px] text-gray-500 block">Asignados en Sorteo General:</span>
+                <span className="text-lg font-bold text-emerald-700">
+                  {assignments.filter((a) => a.assignment_type === 'raffle').length} Cupos
+                </span>
+              </div>
+            </div>
+
+            {/* Tabla Principal de Asignaciones Oficiales */}
+            <div className="space-y-2">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 border-b border-gray-300 pb-1">
+                Listado Oficial de Puestos Asignados ({assignments.length} Espacios Adjudicados)
+              </h2>
+
+              <table className="w-full text-left text-xs border border-gray-300 border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-900 border-b border-gray-300 text-[11px] font-bold">
+                    <th className="p-2 border border-gray-300">Puesto</th>
+                    <th className="p-2 border border-gray-300">Zona Oficial</th>
+                    <th className="p-2 border border-gray-300">Vivienda (Bloque y Casa)</th>
+                    <th className="p-2 border border-gray-300">Placa / Vehículo</th>
+                    <th className="p-2 border border-gray-300">Vía de Adjudicación</th>
+                    <th className="p-2 border border-gray-300">Vigencia</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {assignments.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-4 text-center text-gray-500 italic">
+                        No hay asignaciones registradas para este periodo.
+                      </td>
+                    </tr>
+                  ) : (
+                    assignments.map((a) => (
+                      <tr key={a.id} className="text-[11px]">
+                        <td className="p-2 border border-gray-300 font-mono font-bold">
+                          N° {a.parking_space?.space_number}
+                          {['47', '48', '49', '50'].includes(a.parking_space?.space_number) && ' [Grande]'}
+                        </td>
+                        <td className="p-2 border border-gray-300 font-medium">
+                          {a.parking_space?.zone || a.zone_assigned}
+                        </td>
+                        <td className="p-2 border border-gray-300">
+                          {a.dwelling?.unit_number} ({a.dwelling?.block || 'Principal'})
+                        </td>
+                        <td className="p-2 border border-gray-300 font-mono font-bold">
+                          [{a.vehicle?.plate}] {a.vehicle?.brand || ''}
+                        </td>
+                        <td className="p-2 border border-gray-300 font-medium">
+                          {a.assignment_type === 'special'
+                            ? '⭐ Directa (Condición Especial Salud/Edad)'
+                            : a.assignment_type === 'direct'
+                            ? '🎟️ Directa (Balota Blanca Vigente)'
+                            : '🎲 Sorteo General'}
+                        </td>
+                        <td className="p-2 border border-gray-300 font-mono text-gray-600">
+                          {a.period}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Padrón Oficial de Balotas Blancas (si aplica) */}
+            {whiteBallots.length > 0 && (
+              <div className="space-y-2 pt-2">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 border-b border-gray-300 pb-1">
+                  Padrón Oficial de Balotas Blancas Otorgadas ({whiteBallots.length} Titulares)
+                </h2>
+                <table className="w-full text-left text-xs border border-gray-300 border-collapse">
+                  <thead>
+                    <tr className="bg-gray-100 text-gray-900 border-b border-gray-300 text-[11px] font-bold">
+                      <th className="p-2 border border-gray-300">Titular</th>
+                      <th className="p-2 border border-gray-300">Vivienda</th>
+                      <th className="p-2 border border-gray-300">Placa Congelada</th>
+                      <th className="p-2 border border-gray-300">Beneficio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {whiteBallots.map((b) => (
+                      <tr key={b.id} className="text-[11px]">
+                        <td className="p-2 border border-gray-300 font-medium">{b.resident?.full_name}</td>
+                        <td className="p-2 border border-gray-300">
+                          {b.dwelling?.unit_number} ({b.dwelling?.block || 'Principal'})
+                        </td>
+                        <td className="p-2 border border-gray-300 font-mono font-bold">[{b.frozen_plate}]</td>
+                        <td className="p-2 border border-gray-300">Asignación Directa Próximo Periodo</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Firmas de Legalización de la Copropiedad */}
+            <div className="pt-10 grid grid-cols-2 gap-12 text-center text-xs">
+              <div className="space-y-1">
+                <div className="border-b border-gray-900 w-4/5 mx-auto pb-8"></div>
+                <span className="font-bold block text-gray-950">ADMINISTRACIÓN</span>
+                <span className="text-[10px] text-gray-500 block">Representante Legal / Copropiedad</span>
+              </div>
+
+              <div className="space-y-1">
+                <div className="border-b border-gray-900 w-4/5 mx-auto pb-8"></div>
+                <span className="font-bold block text-gray-950">CONSEJO DE ADMINISTRACIÓN</span>
+                <span className="text-[10px] text-gray-500 block">Delegado Oficial Veedor</span>
+              </div>
+            </div>
+
+            {/* Pie de página oficial reglamentario inmodificable */}
+            <div className="pt-6 border-t border-gray-300 text-center space-y-1">
+              <p className="text-xs font-bold text-gray-900">
+                📌 “Si no está en el listado, acérquese a la administración antes del sorteo.”
+              </p>
+              <p className="text-[9px] text-gray-500">
+                Documento oficial generado bajo el Reglamento de Propiedad Horizontal y el motor de sorteo determinista con memoria histórica de 9 zonas.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
