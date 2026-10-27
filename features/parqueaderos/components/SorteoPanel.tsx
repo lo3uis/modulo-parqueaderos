@@ -104,12 +104,21 @@ export function SorteoPanel() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <a
+            href="/acta-asignacion-parqueaderos.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+          >
+            <span>📥 Descargar PDF Oficial Publicado</span>
+          </a>
+
           <button
             type="button"
             onClick={() => setShowPrintReport(true)}
             className="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition shadow-sm flex items-center gap-1.5"
           >
-            <span>🖨️ Exportar / Imprimir PDF Oficial</span>
+            <span>🖨️ Vista Imprimible / Guardar PDF</span>
           </button>
 
           <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl text-xs font-semibold">

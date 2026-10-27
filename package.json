@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:motos": "npx tsx features/parqueaderos/lib/test-motos-scenarios.ts",
-    "test:carros": "npx tsx features/parqueaderos/lib/test-scenarios.ts"
+    "test:carros": "npx tsx features/parqueaderos/lib/test-scenarios.ts",
+    "generate:pdf": "npx tsx scripts/generate-official-pdf.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.41",

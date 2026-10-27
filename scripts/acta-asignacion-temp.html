@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acta Oficial de Asignación y Padrón de Parqueaderos</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #111827;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #111827;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+    }
+    .header .sub {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4b5563;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin: 6px 0 4px 0;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+    }
+    .header .period {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .header .meta {
+      font-size: 9px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .holiday-banner {
+      background-color: #fefce8;
+      border: 1px solid #fde047;
+      border-left: 4px solid #ca8a04;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 15px;
+    }
+    .holiday-banner strong {
+      color: #854d0e;
+      font-size: 11px;
+    }
+    .holiday-banner p {
+      margin: 4px 0 0 0;
+      color: #713f12;
+      font-size: 10px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .kpi-card {
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .kpi-card .label {
+      font-size: 9px;
+      color: #64748b;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .kpi-card .value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    h2.section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 15px 0 6px 0;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 4px;
+      color: #1e293b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+    table th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      text-transform: uppercase;
+      font-size: 9px;
+    }
+    table td {
+      padding: 5px 8px;
+      border: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    table tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+    .tag-special {
+      background-color: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+    }
+    .tag-direct {
+      background-color: #f3e8ff;
+      color: #7e22ce;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+    }
+    .tag-raffle {
+      background-color: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+    }
+    .plate {
+      font-family: monospace;
+      font-weight: 800;
+      color: #0369a1;
+      font-size: 10.5px;
+    }
+    .signatures {
+      margin-top: 35px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      text-align: center;
+    }
+    .sig-line {
+      border-bottom: 1px solid #0f172a;
+      height: 40px;
+      margin-bottom: 6px;
+    }
+    .sig-name {
+      font-weight: 700;
+      font-size: 11px;
+      color: #0f172a;
+    }
+    .sig-role {
+      font-size: 9px;
+      color: #64748b;
+    }
+    .footer-note {
+      margin-top: 25px;
+      padding-top: 10px;
+      border-top: 1px solid #cbd5e1;
+      text-align: center;
+    }
+    .mandatory-phrase {
+      font-size: 11px;
+      font-weight: 800;
+      color: #b91c1c;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-size: 8.5px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="sub">CONJUNTO RESIDENCIAL — PROPIEDAD HORIZONTAL</div>
+    <h1>Acta Oficial de Asignación y Padrón de Parqueaderos</h1>
+    <div class="period">
+      Periodo Oficial Adjudicado: <strong>Primer Trimestre 2027 (2027-Q1)</strong> • Capacidad: <strong>96 Carros / 25 Motos</strong>
+    </div>
+    <div class="meta">
+      Fecha de Expedición: 10 de diciembre de 2026 • Sistema de Auditoría Determinista Fisher-Yates (PRP v2)
+    </div>
+  </div>
+
+  <div class="holiday-banner">
+    <strong>🗓️ REGLAMENTACIÓN OFICIAL POR FESTIVIDADES DE FIN DE AÑO:</strong>
+    <p>
+      En cumplimiento del reglamento interno de la copropiedad, la convocatoria e inscripción fue publicada el <strong>último jueves del mes de noviembre (26 de noviembre de 2026)</strong> y el sorteo público se realizó el <strong>segundo jueves del mes de diciembre (10 de diciembre de 2026)</strong>, garantizando vigencia plena para el primer trimestre del año siguiente (2027-Q1).
+    </p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="label">Capacidad Total</span>
+      <span class="value">96 Carros / 25 Motos</span>
+    </div>
+    <div class="kpi-card">
+      <span class="label">Asignación Especial (Salud/Edad)</span>
+      <span class="value">1 Puesto Reservado</span>
+    </div>
+    <div class="kpi-card">
+      <span class="label">Asignación Directa (Balota Blanca)</span>
+      <span class="value">2 Cupos Adjudicados</span>
+    </div>
+    <div class="kpi-card">
+      <span class="label">Sorteo General Tómbola</span>
+      <span class="value">13 Cupos Adjudicados</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">1. Listado Oficial de Puestos Asignados por Zonas (Muestreo Oficial de Zonas 1 a 9 y Bahías de Motos)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 12%;">Puesto</th>
+        <th style="width: 15%;">Zona Asignada</th>
+        <th style="width: 22%;">Vivienda Titular</th>
+        <th style="width: 16%;">Placa</th>
+        <th style="width: 17%;">Vehículo / Marca</th>
+        <th style="width: 18%;">Vía de Adjudicación</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td><strong>N° 01</strong></td>
+          <td>Zona 1</td>
+          <td>Casa 01 (Bloque 1)</td>
+          <td><span class="plate">[ASI3215]</span></td>
+          <td>Mazda 3</td>
+          <td>
+            <span class="tag-direct">🎟️ Directa (Balota Blanca)</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 05</strong></td>
+          <td>Zona 1</td>
+          <td>Casa 08 (Bloque 1)</td>
+          <td><span class="plate">[KTR892]</span></td>
+          <td>Toyota Corolla</td>
+          <td>
+            <span class="tag-special">⭐ Directa (Condición Salud/Edad)</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 14</strong></td>
+          <td>Zona 1</td>
+          <td>Casa 15 (Bloque 1)</td>
+          <td><span class="plate">[DFG456]</span></td>
+          <td>Chevrolet Onix</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 22</strong></td>
+          <td>Zona 2</td>
+          <td>Casa 24 (Bloque 2)</td>
+          <td><span class="plate">[BLU458]</span></td>
+          <td>Renault Duster</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 30</strong></td>
+          <td>Zona 2</td>
+          <td>Casa 31 (Bloque 2)</td>
+          <td><span class="plate">[XYZ987]</span></td>
+          <td>Nissan Versa</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 37</strong></td>
+          <td>Zona 3</td>
+          <td>Casa 42 (Bloque 3)</td>
+          <td><span class="plate">[MWP123]</span></td>
+          <td>Kia Picanto</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 44</strong></td>
+          <td>Zona 4</td>
+          <td>Casa 52 (Bloque 4)</td>
+          <td><span class="plate">[HJK678]</span></td>
+          <td>Ford Fiesta</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 48 [Grande]</strong></td>
+          <td>Zona 4</td>
+          <td>Casa 55 (Bloque 4)</td>
+          <td><span class="plate">[TXR990]</span></td>
+          <td>Toyota Prado (Sobredimensionado)</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 59</strong></td>
+          <td>Zona 5</td>
+          <td>Casa 62 (Bloque 5)</td>
+          <td><span class="plate">[QWE345]</span></td>
+          <td>Volkswagen Gol</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 65</strong></td>
+          <td>Zona 6</td>
+          <td>Casa 71 (Bloque 6)</td>
+          <td><span class="plate">[VBN234]</span></td>
+          <td>Suzuki Swift</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 75</strong></td>
+          <td>Zona 7</td>
+          <td>Casa 83 (Bloque 7)</td>
+          <td><span class="plate">[PLM876]</span></td>
+          <td>Hyundai Tucson</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 88</strong></td>
+          <td>Zona 8</td>
+          <td>Casa 94 (Bloque 8)</td>
+          <td><span class="plate">[RTY567]</span></td>
+          <td>Mazda CX-30</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° 96</strong></td>
+          <td>Zona 9</td>
+          <td>Casa 102 (Bloque 9)</td>
+          <td><span class="plate">[CVB789]</span></td>
+          <td>Chevrolet Tracker</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° M-01</strong></td>
+          <td>Bahía Motos 1</td>
+          <td>Casa 12 (Manzana B)</td>
+          <td><span class="plate">[QRS12E]</span></td>
+          <td>Bajaj Pulsar NS200</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° M-02</strong></td>
+          <td>Bahía Motos 1</td>
+          <td>Casa 25 (Manzana C)</td>
+          <td><span class="plate">[KLM45D]</span></td>
+          <td>Honda CB190</td>
+          <td>
+            <span class="tag-raffle">🎲 Sorteo General</span>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><strong>N° M-21</strong></td>
+          <td>Bahía Motos 2</td>
+          <td>Casa 12 (Manzana B)</td>
+          <td><span class="plate">[STU89F]</span></td>
+          <td>Yamaha NMAX</td>
+          <td>
+            <span class="tag-direct">🎟️ Directa (Balota Blanca)</span>
+          </td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+  <h2 class="section-title">2. Padrón Oficial de Balotas Blancas Otorgadas (Prelación Inmediata Siguiente Periodo)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 28%;">Titular del Vehículo</th>
+        <th style="width: 22%;">Vivienda</th>
+        <th style="width: 16%;">Placa Congelada</th>
+        <th style="width: 34%;">Beneficio Otorgado</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td><strong>María Gómez Martínez</strong></td>
+          <td>Casa 12 (Manzana B)</td>
+          <td><span class="plate">[STU89F]</span></td>
+          <td><span class="tag-direct">Asignación Directa Garantizada Primer Trimestre (2027-Q1)</span></td>
+        </tr>
+      
+        <tr>
+          <td><strong>Carlos Mario Ortiz</strong></td>
+          <td>Casa 45 (Manzana D)</td>
+          <td><span class="plate">[WPR210]</span></td>
+          <td><span class="tag-direct">Asignación Directa Garantizada Primer Trimestre (2027-Q1)</span></td>
+        </tr>
+      
+        <tr>
+          <td><strong>Claudia Patricia Ramos</strong></td>
+          <td>Casa 88 (Manzana J)</td>
+          <td><span class="plate">[NHK542]</span></td>
+          <td><span class="tag-direct">Asignación Directa Garantizada Primer Trimestre (2027-Q1)</span></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+  <div class="signatures">
+    <div>
+      <div class="sig-line"></div>
+      <div class="sig-name">ADMINISTRACIÓN CONJUNTO RESIDENCIAL</div>
+      <div class="sig-role">Representante Legal — Ejecutoria Oficial</div>
+    </div>
+    <div>
+      <div class="sig-line"></div>
+      <div class="sig-name">CONSEJO DE ADMINISTRACIÓN</div>
+      <div class="sig-role">Presidente / Delegado Veedor de Transparencia</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <div class="mandatory-phrase">
+      📌 “Si no está en el listado, acérquese a la administración antes del sorteo.”
+    </div>
+    <div class="footer-sub">
+      Documento legal oficial de asignación expedido bajo los términos de la Ley 675 de 2001 y el Reglamento Interno de Propiedad Horizontal.
+    </div>
+  </div>
+
+</body>
+</html>
