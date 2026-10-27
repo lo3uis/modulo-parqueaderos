@@ -1,0 +1,20 @@
+name: Keep Alive Supabase & Auto Backup
+
+on:
+  schedule:
+    # Se ejecuta todos los lunes y jueves a las 08:00 UTC (cada 3-4 días, evitando los 7 días de inactividad)
+    - cron: '0 8 * * 1,4'
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub con un clic
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API (Evita pausa por inactividad de 7 días)
+        run: |
+          echo "Enviando ping a Supabase para mantener la base de datos activa..."
+          curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/parking_spaces?select=id&limit=1"
+          echo "Ping enviado exitosamente."
