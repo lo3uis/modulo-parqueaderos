@@ -106,7 +106,8 @@ export function ejecutarSorteoOficial(input: SorteoInput): SorteoResult {
     let esPuestoNuevo = nuncaOcupados.length > 0;
 
     // 3. Aplicar rotación de zona consecutiva (no repetir la zona del trimestre anterior)
-    if (req.previous_zone_assigned) {
+    // Regla: Solo aplica para carros (9 zonas oficiales). Las motos no tienen zonificación (zona única de 25 cupos).
+    if (input.vehicleType === 'A' && req.previous_zone_assigned) {
       const conRotacionZona = poolFinal.filter((s) => s.zone !== req.previous_zone_assigned);
       if (conRotacionZona.length > 0) {
         poolFinal = conRotacionZona;

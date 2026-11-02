@@ -1,23 +1,24 @@
 // ============================================================
 // SUITE DE PRUEBAS DE CASOS DE NEGOCIO — MOTOCICLETAS (PRP v2)
+// Regla Reglamentaria: Las motos NO tienen zonificación (Zona Única de 25 puestos M-01 a M-25).
 // Caso 1: Sorteo Segundo Semestre (2026-S2 / Q2) -> Balota Blanca para moto sin cupo
 // Caso 2: Sorteo Tercer Semestre (2026-S3 / Q3) -> Ingreso DIRECTO automático sin tómbola
-// Caso 3: Rotación de Zona en Motos (Bahía Motos 1 vs Bahía Motos 2)
+// Caso 3: Memoria Histórica en Zona Única de Motos (no repetición de puesto físico)
 // ============================================================
 
 import { ejecutarSorteoOficial } from './sorteoEngine';
 import type { ParkingSpace, ParkingRequest } from '../types/parking';
 
 console.log('======================================================================');
-console.log('🏍️ INICIANDO BANCO DE PRUEBAS DE SORTEO PARA MOTOCICLETAS (CAP. 25)');
+console.log('🏍️ BANCO DE PRUEBAS PARA MOTOCICLETAS (CAP. 25 - ZONA ÚNICA)');
 console.log('======================================================================\n');
 
-// 1. Generador de los 25 Espacios Oficiales de Motos (M-01 a M-25)
+// 1. Generador de los 25 Espacios Oficiales de Motos (M-01 a M-25) en Zona Única
 function generarEspaciosMotosMock(): ParkingSpace[] {
   const espacios: ParkingSpace[] = [];
   for (let i = 1; i <= 25; i++) {
     const sNum = `M-${String(i).padStart(2, '0')}`;
-    const zone = i <= 13 ? 'Bahía Motos 1' : 'Bahía Motos 2';
+    const zone = 'Zona Motos'; // Las motos no tienen sub-zonificación
 
     espacios.push({
       id: `space-moto-${i}`,
@@ -46,7 +47,7 @@ console.log('   Postulaciones habilitadas: 3 motos');
 console.log('======================================================================\n');
 
 // Solo 2 espacios disponibles en este semestre
-const espaciosS2 = generarEspaciosMotosMock().slice(0, 2); // M-01 y M-02 (Bahía Motos 1)
+const espaciosS2 = generarEspaciosMotosMock().slice(0, 2); // M-01 y M-02 (Zona Motos)
 
 const participantesS2: ParkingRequest[] = [
   {
@@ -367,18 +368,20 @@ if (asignadaDirecta) {
 }
 
 // ============================================================
-// PARTE 3: ROTACIÓN DE ZONA EN MOTOS (Bahía Motos 1 vs Bahía Motos 2)
-// Escenario: Una moto estuvo en Bahía Motos 1 en el semestre anterior.
-// En el nuevo sorteo el algoritmo de rotación evita repetir Bahía Motos 1
-// y le asigna un cupo en Bahía Motos 2.
+// PARTE 3: MEMORIA HISTÓRICA EN ZONA ÚNICA DE MOTOS (25 PUESTOS)
+// Escenario: Las motos NO tienen división de zonas (es un único bloque de 25 puestos).
+// La regla que aplica es la memoria de rotación de puesto físico:
+// Si María Gómez tuvo el puesto M-05 en el periodo anterior,
+// el algoritmo prioriza que en el nuevo periodo reciba un puesto NUNCA antes ocupado.
 // ============================================================
 console.log('======================================================================');
-console.log('📍 PASO 3: VALIDACIÓN DE ROTACIÓN DE ZONA PARA MOTOCICLETAS');
-console.log('   Bahía anterior asignada: Bahía Motos 1');
-console.log('   Objetivo: Garantizar que el sorteo rote automáticamente a Bahía Motos 2.');
+console.log('📍 PASO 3: VALIDACIÓN DE ZONA ÚNICA Y MEMORIA DE PUESTO FÍSICO (MOTOS)');
+console.log('   Zona de motos: Única (sin zonificación múltiple)');
+console.log('   Puesto anterior ocupado: M-05');
+console.log('   Objetivo: Garantizar asignación en Zona Motos con puesto físico inédito.');
 console.log('======================================================================\n');
 
-const zonaAnteriorMoto = 'Bahía Motos 1';
+const zonaMotos = 'Zona Motos';
 const puestoAnteriorMoto = 'M-05';
 
 const historicalMapMotos: Record<string, string[]> = {
@@ -398,7 +401,7 @@ const reqMotoRotacion: ParkingRequest = {
   status: 'eligible',
   has_white_ballot: false,
   is_direct_assignment: false,
-  previous_zone_assigned: zonaAnteriorMoto, // ZONA ANTERIOR REGISTRADA
+  previous_zone_assigned: zonaMotos,
   submitted_at: '2027-01-05T08:00:00.000Z',
   dwelling: {
     id: 'dw-casa-12',
@@ -440,23 +443,22 @@ const resultadoRotacion = ejecutarSorteoOficial({
 });
 
 const asignacionRotada = resultadoRotacion.raffleAssignments[0];
-console.log(`Resultado de Rotación para Moto STU89F:`);
-console.log(` - Zona anterior: ${zonaAnteriorMoto} (Puesto ${puestoAnteriorMoto})`);
-console.log(` - Nueva Zona Asignada: ${asignacionRotada.zone}`);
-console.log(` - Nuevo Puesto Físico Asignado: ${asignacionRotada.spaceNumber}`);
+console.log(`Resultado para Moto STU89F en Zona Única:`);
+console.log(` - Zona Asignada: ${asignacionRotada.zone} (Zona Única de 25 cupos)`);
+console.log(` - Puesto Físico Asignado: N° ${asignacionRotada.spaceNumber}`);
 console.log(` - ¿Puesto inédito/nunca ocupado por este vehículo?: ${asignacionRotada.esPuestoNuevo ? 'SÍ' : 'NO'}`);
 
-const rotoZonaExitoso = asignacionRotada.zone !== zonaAnteriorMoto;
+const esZonaUnica = asignacionRotada.zone === zonaMotos;
 const rotoPuestoExitoso = asignacionRotada.spaceNumber !== puestoAnteriorMoto;
 
 console.log(`\nVerificaciones:`);
-console.log(` 1. ¿Rotó de Zona (Diferente a ${zonaAnteriorMoto})?: ${rotoZonaExitoso ? '✅ SÍ, ROTÓ A ' + asignacionRotada.zone : '❌ FALLÓ'}`);
-console.log(` 2. ¿Puesto físico diferente a ${puestoAnteriorMoto}?: ${rotoPuestoExitoso ? '✅ SÍ, NUEVO PUESTO ' + asignacionRotada.spaceNumber : '❌ FALLÓ'}`);
+console.log(` 1. ¿Pertenece a la Zona Única de Motos (${zonaMotos})?: ${esZonaUnica ? '✅ SÍ (Sin sub-zonas)' : '❌ FALLÓ'}`);
+console.log(` 2. ¿Puesto físico diferente a N° ${puestoAnteriorMoto}?: ${rotoPuestoExitoso ? '✅ SÍ, NUEVO PUESTO ' + asignacionRotada.spaceNumber : '❌ FALLÓ'}`);
 
-if (rotoZonaExitoso && rotoPuestoExitoso) {
-  console.log('\n🎉 TODOS LOS CASOS DE PRUEBA DE MOTOCICLETAS PASARON AL 100%');
+if (esZonaUnica && rotoPuestoExitoso) {
+  console.log('\n🎉 TODOS LOS CASOS DE PRUEBA DE MOTOCICLETAS (ZONA ÚNICA) PASARON AL 100%');
   console.log('======================================================================\n');
 } else {
-  console.error('❌ Error en validación de rotación de motos.');
+  console.error('❌ Error en validación de motos en zona única.');
   process.exit(1);
 }
