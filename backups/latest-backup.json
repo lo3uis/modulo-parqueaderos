@@ -29,6 +29,16 @@
       "dwelling_type": "apartamento",
       "is_active": true,
       "created_at": "2026-10-27T02:00:31.058384+00:00"
+    },
+    {
+      "id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "unit_number": "10",
+      "zone": "Asignada por Sistema",
+      "block": "Bloque 12",
+      "house_number": "10",
+      "dwelling_type": "apartamento",
+      "is_active": true,
+      "created_at": "2026-11-04T00:59:16.433763+00:00"
     }
   ],
   "residents": [
@@ -76,6 +86,21 @@
       "is_active": true,
       "created_at": "2026-10-27T02:00:31.423231+00:00",
       "updated_at": "2026-10-27T02:00:31.423231+00:00"
+    },
+    {
+      "id": "c81a8301-e0cb-49f8-a0dc-00750417340e",
+      "user_id": null,
+      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "full_name": "Jorge Caro",
+      "document_id": "17158748",
+      "email": "pruebas@gmail.com",
+      "phone": "",
+      "residency_type": "propietario",
+      "payments_current": true,
+      "payment_verified_until": null,
+      "is_active": true,
+      "created_at": "2026-11-04T00:59:16.954284+00:00",
+      "updated_at": "2026-11-04T00:59:16.954284+00:00"
     }
   ],
   "vehicles": [
@@ -126,310 +151,26 @@
       "is_active": true,
       "created_at": "2026-10-27T02:00:31.945889+00:00",
       "updated_at": "2026-10-27T02:00:31.945889+00:00"
+    },
+    {
+      "id": "287d8b67-f934-4812-b711-fa9d07c09134",
+      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "resident_id": "c81a8301-e0cb-49f8-a0dc-00750417340e",
+      "internal_code": "VEH-004",
+      "plate": "EMA058",
+      "brand": "Chevrolete",
+      "model": "",
+      "color": null,
+      "vehicle_type": "A",
+      "vehicle_category": "antiguo",
+      "is_oversized": false,
+      "is_active": true,
+      "created_at": "2026-11-04T00:59:17.688485+00:00",
+      "updated_at": "2026-11-04T00:59:17.688485+00:00"
     }
   ],
   "vehicle_documents": [],
   "parking_spaces": [
-    {
-      "id": "acb4355d-f4f9-44f2-8be2-9e498b52bb6d",
-      "space_number": "M-01",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "e07a1899-815c-4af9-a7de-29b83b12bbba",
-      "space_number": "M-02",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "01de762f-eaf3-4b1f-91b4-5a6872db623e",
-      "space_number": "M-03",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "d2bc4026-300c-4896-a3a2-6116743a3a5b",
-      "space_number": "M-04",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "0c1ecd3b-7e36-4dcb-a57e-61b5b261b225",
-      "space_number": "M-05",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "a6612b62-f57a-4fa7-a77c-6f86b262482c",
-      "space_number": "M-06",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "e421da03-8216-4c66-8ed6-c4a57953d55c",
-      "space_number": "M-07",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "8600784f-a235-4ac6-89a1-455c532a702e",
-      "space_number": "M-08",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "fa33cbf7-650e-4755-8e34-ef851fe9bb13",
-      "space_number": "M-09",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "7eb18887-f7d0-4af7-b4d0-d13e3db62be1",
-      "space_number": "M-10",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "0b7b94a2-b633-423c-8d82-ac39224c125c",
-      "space_number": "M-11",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "0bb8221a-088f-4f74-afff-d0ec28db061b",
-      "space_number": "M-12",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "61a56290-0756-4df8-8158-38e487541b24",
-      "space_number": "M-13",
-      "zone": "Bahía Motos 1",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "6bfd9c2c-3f8d-4324-999d-c6105e64447d",
-      "space_number": "M-14",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "2e7374e7-bf1e-4a38-8192-9b49c8501010",
-      "space_number": "M-15",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "15bf507c-f5a9-4565-97b0-9ec8e8c4036f",
-      "space_number": "M-16",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "035fd98f-36a0-4537-b7ca-0d182a470165",
-      "space_number": "M-17",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "8ceaa173-f260-461d-a90b-a61f8a179664",
-      "space_number": "M-18",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "ffa92a58-2a73-4538-9516-a754962ff8e3",
-      "space_number": "M-19",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "c2d7123c-1b5a-4893-a83d-ebb09b556c86",
-      "space_number": "M-20",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "8155f630-30c0-4691-be56-75f68c5ee4d5",
-      "space_number": "M-21",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "1397a673-4683-4716-b905-42bc400abce9",
-      "space_number": "M-22",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "1fb4af6e-cd8c-4c27-afda-007d13653c21",
-      "space_number": "M-23",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "410e1445-4f14-4e9b-9b16-9e497f10c0f8",
-      "space_number": "M-24",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "61b5ed7e-0b62-4d26-8193-2498a79b342d",
-      "space_number": "M-25",
-      "zone": "Bahía Motos 2",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
     {
       "id": "188a62cb-36f7-458f-9535-02e2f35f69b4",
       "space_number": "01",
@@ -1581,6 +1322,306 @@
       "notes": null,
       "is_active": true,
       "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "acb4355d-f4f9-44f2-8be2-9e498b52bb6d",
+      "space_number": "M-01",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "e07a1899-815c-4af9-a7de-29b83b12bbba",
+      "space_number": "M-02",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "01de762f-eaf3-4b1f-91b4-5a6872db623e",
+      "space_number": "M-03",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "d2bc4026-300c-4896-a3a2-6116743a3a5b",
+      "space_number": "M-04",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "0c1ecd3b-7e36-4dcb-a57e-61b5b261b225",
+      "space_number": "M-05",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "a6612b62-f57a-4fa7-a77c-6f86b262482c",
+      "space_number": "M-06",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "e421da03-8216-4c66-8ed6-c4a57953d55c",
+      "space_number": "M-07",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "8600784f-a235-4ac6-89a1-455c532a702e",
+      "space_number": "M-08",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "fa33cbf7-650e-4755-8e34-ef851fe9bb13",
+      "space_number": "M-09",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "7eb18887-f7d0-4af7-b4d0-d13e3db62be1",
+      "space_number": "M-10",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "0b7b94a2-b633-423c-8d82-ac39224c125c",
+      "space_number": "M-11",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "0bb8221a-088f-4f74-afff-d0ec28db061b",
+      "space_number": "M-12",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "61a56290-0756-4df8-8158-38e487541b24",
+      "space_number": "M-13",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "6bfd9c2c-3f8d-4324-999d-c6105e64447d",
+      "space_number": "M-14",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "2e7374e7-bf1e-4a38-8192-9b49c8501010",
+      "space_number": "M-15",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "15bf507c-f5a9-4565-97b0-9ec8e8c4036f",
+      "space_number": "M-16",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "035fd98f-36a0-4537-b7ca-0d182a470165",
+      "space_number": "M-17",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "8ceaa173-f260-461d-a90b-a61f8a179664",
+      "space_number": "M-18",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "ffa92a58-2a73-4538-9516-a754962ff8e3",
+      "space_number": "M-19",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "c2d7123c-1b5a-4893-a83d-ebb09b556c86",
+      "space_number": "M-20",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "8155f630-30c0-4691-be56-75f68c5ee4d5",
+      "space_number": "M-21",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "1397a673-4683-4716-b905-42bc400abce9",
+      "space_number": "M-22",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "1fb4af6e-cd8c-4c27-afda-007d13653c21",
+      "space_number": "M-23",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "410e1445-4f14-4e9b-9b16-9e497f10c0f8",
+      "space_number": "M-24",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "61b5ed7e-0b62-4d26-8193-2498a79b342d",
+      "space_number": "M-25",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "available",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
     }
   ],
   "rotation_cycles": [
@@ -1657,13 +1698,30 @@
       "receipt_number": "ACUSE-A-432825",
       "residency_type_snapshot": "propietario",
       "payment_status_snapshot": "al_dia",
-      "payment_validation_note": "[CASO MUY ESPECIAL - CONDICIÓN ESPECIAL]: Adjudicado directamente Puesto N° 01 (Zona 1). Descontado de la capacidad de 96. Exento de doble validación y de sorteo general. Motivo: Salud / Movilidad Reducida | Adulto mayor, movilidad reducida",
+      "payment_validation_note": "[CASO MUY ESPECIAL - CONDICIÃ“N ESPECIAL]: Adjudicado directamente Puesto NÂ° 01 (Zona 1). Descontado de la capacidad de 96. Exento de doble validaciÃ³n y de sorteo general. Motivo: Salud / Movilidad Reducida | Adulto mayor, movilidad reducida",
       "documents_complete": true,
       "status": "assigned_direct",
       "has_white_ballot": false,
       "is_direct_assignment": true,
       "previous_zone_assigned": null,
       "submitted_at": "2026-10-27T02:00:32.460516+00:00"
+    },
+    {
+      "id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "resident_id": "c81a8301-e0cb-49f8-a0dc-00750417340e",
+      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "vehicle_id": "287d8b67-f934-4812-b711-fa9d07c09134",
+      "receipt_number": "ACUSE-A-957440",
+      "residency_type_snapshot": "propietario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "under_review",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-11-04T00:59:18.159135+00:00"
     }
   ],
   "request_reviews": [
@@ -1694,7 +1752,7 @@
         "docsApproved": true,
         "paymentsCurrent": true
       },
-      "observations": "Vehículo registra 1 amonestación(es) oficial(es) en portería.",
+      "observations": "VehÃ­culo registra 1 amonestaciÃ³n(es) oficial(es) en porterÃ­a.",
       "reviewed_at": "2026-10-26T15:00:12.56+00:00"
     },
     {
@@ -1724,7 +1782,7 @@
         "docsApproved": true,
         "paymentsCurrent": true
       },
-      "observations": "Vehículo registra 1 amonestación(es) oficial(es) en portería.",
+      "observations": "VehÃ­culo registra 1 amonestaciÃ³n(es) oficial(es) en porterÃ­a.",
       "reviewed_at": "2026-10-26T15:00:27.712+00:00"
     }
   ],
@@ -1789,7 +1847,7 @@
       "incident_type": "unauthorized_vehicle",
       "has_warning": true,
       "registered_by": null,
-      "notes": "Reporta ingreso para Casa 11 Bloque 16 no se encuentra registro alguno de este vehículo, no procede ingreso",
+      "notes": "Reporta ingreso para Casa 11 Bloque 16 no se encuentra registro alguno de este vehÃ­culo, no procede ingreso",
       "evidence_url": null,
       "occurred_at": "2026-10-26T14:21:22.111506+00:00"
     },
@@ -1808,108 +1866,108 @@
   ],
   "disqualification_reasons": [
     {
-      "id": "3e99beea-d3d6-48ea-928c-a84c91956cbd",
+      "id": "a4f880e5-da68-43f4-bbea-eb0bb442360d",
       "reason_code": "E01_SIN_POSTULACION",
-      "label": "Sin postulación",
-      "description": "No se diligenció el formulario de postulación dentro del plazo establecido.",
+      "label": "Sin postulaciÃ³n",
+      "description": "No se diligenciÃ³ el formulario de postulaciÃ³n dentro del plazo establecido.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "6eb22a9c-a350-4f6c-8bd1-2736df37da23",
+      "id": "a91c02f2-d4ad-4ebf-8f39-d3dc01469a8b",
       "reason_code": "E02_PAGO_NO_AL_DIA",
-      "label": "Pagos no al día",
-      "description": "La unidad no se encuentra al día con los pagos a la fecha de corte.",
+      "label": "Pagos no al dÃ­a",
+      "description": "La unidad no se encuentra al dÃ­a con los pagos a la fecha de corte.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "bc26f0f7-142a-46b7-8dd2-b31f318bb57f",
+      "id": "272deda9-f4b5-4d61-8dbb-6e4dba44bd97",
       "reason_code": "E03_ACUERDO_PAGO",
       "label": "Acuerdo de pago incumplido",
       "description": "La unidad presenta acuerdos de pago pendientes o incumplidos.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "76aa0be8-d89b-4c60-90fc-590edd578d17",
+      "id": "1c9c68eb-7732-4134-b4d6-fba5b69543f6",
       "reason_code": "E04_DOCUMENTOS",
-      "label": "Falta documentación obligatoria",
-      "description": "Vehículo nuevo sin SOAT o tarjeta de propiedad vigentes y aprobados.",
+      "label": "Falta documentaciÃ³n obligatoria",
+      "description": "VehÃ­culo nuevo sin SOAT o tarjeta de propiedad vigentes y aprobados.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "f464577c-5634-45d2-9edc-4af81705a583",
+      "id": "302cadde-7455-4b7f-b5ca-55fbc1450236",
       "reason_code": "E05_VEHICULO_INVALIDO",
-      "label": "Vehículo no vinculado a unidad",
-      "description": "El vehículo no corresponde ni está asociado a la unidad solicitante.",
+      "label": "VehÃ­culo no vinculado a unidad",
+      "description": "El vehÃ­culo no corresponde ni estÃ¡ asociado a la unidad solicitante.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "3935e3dd-6243-483f-be8b-178b64c9b17e",
+      "id": "54e909b8-b9e1-4e3e-97a8-591d3aec0627",
       "reason_code": "E06_RESIDENTE_INACTIVO",
       "label": "Residente inactivo",
       "description": "El perfil del residente no se encuentra activo en el sistema.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "b5f5cf93-eaea-4e35-8b34-29447e4c3777",
+      "id": "5fa075da-0bb4-4a38-a8c7-c6b47bf8ff6c",
       "reason_code": "E07_DUPLICADO",
       "label": "Solicitud duplicada",
-      "description": "La unidad ya cuenta con una postulación para este mismo sorteo y categoría.",
+      "description": "La unidad ya cuenta con una postulaciÃ³n para este mismo sorteo y categorÃ­a.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "1d6f31b5-0674-4ad1-b8af-e57dd0c7a0d6",
+      "id": "6e2af030-af2c-4d4c-a23b-90240b6afec1",
       "reason_code": "B01_SIN_POSTULACION",
-      "label": "Balota blanca: sin postulación",
-      "description": "El titular de balota blanca no diligenció una nueva solicitud en el periodo actual.",
+      "label": "Balota blanca: sin postulaciÃ³n",
+      "description": "El titular de balota blanca no diligenciÃ³ una nueva solicitud en el periodo actual.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "a6e6f854-f881-4491-bef5-117ed4656367",
+      "id": "2e3b8fdf-a4c6-4f12-8640-b5d6035ada80",
       "reason_code": "B02_REQUISITOS",
       "label": "Balota blanca: incumple requisitos",
       "description": "El titular de balota blanca no cumple las condiciones generales de elegibilidad.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "61e2676d-2518-4abd-8acc-4d9704b6ba3a",
+      "id": "a624b727-373e-42b7-a004-43ba18e4b82a",
       "reason_code": "B03_ACUERDO_INCUMPLIDO",
       "label": "Balota blanca: acuerdo incumplido",
       "description": "El titular registra un acuerdo de pago en mora.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "efb6ac75-c279-456f-9ea7-ba635c447683",
+      "id": "a3554838-5280-49c8-be80-1d6f44cbc014",
       "reason_code": "B04_RELACION_UNIDAD",
       "label": "Balota blanca: cambio de unidad",
-      "description": "El residente ya no habita o no está vinculado a la unidad original.",
+      "description": "El residente ya no habita o no estÃ¡ vinculado a la unidad original.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "7bac7b96-5b2d-4672-9908-58d29609c4a6",
+      "id": "3c29f15c-26fa-4d23-8521-70871b91f27f",
       "reason_code": "B05_VEHICULO_DISTINTO",
-      "label": "Balota blanca: vehículo distinto",
-      "description": "Se postuló un vehículo con placa o modelo diferente al registrado en la balota.",
+      "label": "Balota blanca: vehÃ­culo distinto",
+      "description": "Se postulÃ³ un vehÃ­culo con placa o modelo diferente al registrado en la balota.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     },
     {
-      "id": "7e12b763-a3c5-4716-8e65-8a67275290e2",
+      "id": "9801206e-2afe-4021-982c-ccb2e09ea1d0",
       "reason_code": "B06_BALOTA_NO_VIGENTE",
       "label": "Balota blanca: no vigente",
       "description": "La balota blanca no se encuentra en estado vigente para este ciclo anual.",
       "is_active": true,
-      "created_at": "2026-10-25T04:01:03.825489+00:00"
+      "created_at": "2026-11-03T15:05:19.190071+00:00"
     }
   ]
 }
