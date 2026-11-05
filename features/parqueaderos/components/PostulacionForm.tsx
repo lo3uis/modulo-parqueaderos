@@ -225,7 +225,8 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
             <div className="text-sm font-bold text-gray-900 dark:text-gray-100">
               Puesto Físico Adjudicado:{' '}
               <span className="font-mono text-emerald-600 dark:text-emerald-400 text-base">
-                N° {acuse.assignedSpace.spaceNumber} ({acuse.assignedSpace.zone})
+                N° {acuse.assignedSpace.spaceNumber}
+                {formData.vehicleType === 'A' ? ` (${acuse.assignedSpace.zone})` : ''}
               </span>
             </div>
             <p className="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
@@ -618,7 +619,9 @@ export function PostulacionForm({ onSuccess }: PostulacionFormProps) {
                     <option value="">-- Asignar primer puesto accesible disponible --</option>
                     {availableSpaces.map((s) => (
                       <option key={s.id} value={s.space_number}>
-                        Puesto N° {s.space_number} ({s.zone}) {s.allows_oversized ? '[Grande]' : ''}
+                        Puesto N° {s.space_number}
+                        {s.vehicle_type === 'A' ? ` (${s.zone})` : ''}
+                        {s.allows_oversized ? ' [Grande]' : ''}
                       </option>
                     ))}
                   </select>

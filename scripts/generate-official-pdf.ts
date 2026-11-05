@@ -67,9 +67,9 @@ async function run() {
     { puesto: 'N° 88', zona: 'Zona 8', vivienda: 'Casa 94 (Bloque 8)', placa: 'RTY567', vehiculo: 'Mazda CX-30', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
     { puesto: 'N° 96', zona: 'Zona 9', vivienda: 'Casa 102 (Bloque 9)', placa: 'CVB789', vehiculo: 'Chevrolet Tracker', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
     // Motos representativas (Zona Única de 25 cupos)
-    { puesto: 'N° M-01', zona: 'Zona Motos', vivienda: 'Casa 12 (Manzana B)', placa: 'QRS12E', vehiculo: 'Bajaj Pulsar NS200', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
-    { puesto: 'N° M-02', zona: 'Zona Motos', vivienda: 'Casa 25 (Manzana C)', placa: 'KLM45D', vehiculo: 'Honda CB190', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
-    { puesto: 'N° M-21', zona: 'Zona Motos', vivienda: 'Casa 12 (Manzana B)', placa: 'STU89F', vehiculo: 'Yamaha NMAX', tipo: '🎟️ Directa (Balota Blanca)', vigencia: '2027-Q1' },
+    { puesto: 'N° M-01', zona: 'Sin zonificación', vivienda: 'Casa 12 (Manzana B)', placa: 'QRS12E', vehiculo: 'Bajaj Pulsar NS200', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
+    { puesto: 'N° M-02', zona: 'Sin zonificación', vivienda: 'Casa 25 (Manzana C)', placa: 'KLM45D', vehiculo: 'Honda CB190', tipo: '🎲 Sorteo General', vigencia: '2027-Q1' },
+    { puesto: 'N° M-21', zona: 'Sin zonificación', vivienda: 'Casa 12 (Manzana B)', placa: 'STU89F', vehiculo: 'Yamaha NMAX', tipo: '🎟️ Directa (Balota Blanca)', vigencia: '2027-Q1' },
   ];
 
   // Padrón representativo de Balotas Blancas

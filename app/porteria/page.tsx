@@ -262,7 +262,9 @@ export default function PorteriaPage() {
                   <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">
                     N° {result.space?.space_number}
                   </div>
-                  <span className="text-xs text-gray-500 font-medium">({result.space?.zone})</span>
+                  {result.space?.vehicle_type === 'A' ? (
+                    <span className="text-xs text-gray-500 font-medium">({result.space?.zone})</span>
+                  ) : null}
                 </div>
 
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 shadow-sm">
@@ -371,7 +373,8 @@ export default function PorteriaPage() {
                         [{inc.observed_plate}]
                       </td>
                       <td className="p-3.5 font-bold font-mono">
-                        N° {inc.parking_space?.space_number} ({inc.parking_space?.zone})
+                        N° {inc.parking_space?.space_number}
+                        {inc.parking_space?.vehicle_type === 'A' ? ` (${inc.parking_space?.zone})` : ''}
                       </td>
                       <td className="p-3.5">
                         {TIPOS_INFRACCION.find((t) => t.code === inc.incident_type)?.label || inc.incident_type}
@@ -460,7 +463,7 @@ export default function PorteriaPage() {
                   <option value="">-- Selecciona el puesto --</option>
                   {spaces.map((s) => (
                     <option key={s.id} value={s.id}>
-                      Puesto N° {s.space_number} ({s.zone} - {s.vehicle_type === 'A' ? 'Carro' : 'Moto'})
+                      Puesto N° {s.space_number} ({s.vehicle_type === 'A' ? `${s.zone} - Carro` : 'Moto'})
                     </option>
                   ))}
                 </select>

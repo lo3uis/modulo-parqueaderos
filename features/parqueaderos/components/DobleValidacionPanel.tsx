@@ -715,7 +715,9 @@ export function DobleValidacionPanel() {
                     <option value="">-- Selecciona un puesto disponible --</option>
                     {availableSpaces.map((s) => (
                       <option key={s.id} value={s.space_number}>
-                        Puesto N° {s.space_number} ({s.zone}) {s.allows_oversized ? '[Puesto Grande]' : ''}
+                        Puesto N° {s.space_number}
+                        {s.vehicle_type === 'A' ? ` (${s.zone})` : ''}
+                        {s.allows_oversized ? ' [Puesto Grande]' : ''}
                       </option>
                     ))}
                   </select>

@@ -254,7 +254,11 @@ export function SorteoPanel() {
                       )}
                     </td>
                     <td className="p-3.5 font-semibold text-gray-700 dark:text-gray-300">
-                      {a.parking_space?.zone || a.zone_assigned}
+                      {vehicleType === 'M' || a.vehicle?.vehicle_type === 'M' ? (
+                        <span className="text-gray-400 font-normal">Sin zonificación</span>
+                      ) : (
+                        a.parking_space?.zone || a.zone_assigned
+                      )}
                     </td>
                     <td className="p-3.5 font-semibold text-gray-900 dark:text-gray-100">
                       {a.dwelling?.unit_number} ({a.dwelling?.block || 'Principal'})
@@ -470,7 +474,9 @@ export function SorteoPanel() {
                           {['47', '48', '49', '50'].includes(a.parking_space?.space_number) && ' [Grande]'}
                         </td>
                         <td className="p-2 border border-gray-300 font-medium">
-                          {a.parking_space?.zone || a.zone_assigned}
+                          {vehicleType === 'M' || a.vehicle?.vehicle_type === 'M'
+                            ? 'Sin zonificación'
+                            : (a.parking_space?.zone || a.zone_assigned)}
                         </td>
                         <td className="p-2 border border-gray-300">
                           {a.dwelling?.unit_number} ({a.dwelling?.block || 'Principal'})
