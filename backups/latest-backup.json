@@ -39,6 +39,26 @@
       "dwelling_type": "apartamento",
       "is_active": true,
       "created_at": "2026-11-04T00:59:16.433763+00:00"
+    },
+    {
+      "id": "4e60632c-6a97-406e-81a5-34ec5d7872b7",
+      "unit_number": "Casa 10",
+      "zone": "Asignada por Sistema",
+      "block": "bloque 08",
+      "house_number": "Casa 10",
+      "dwelling_type": "apartamento",
+      "is_active": true,
+      "created_at": "2026-11-05T23:11:08.569462+00:00"
+    },
+    {
+      "id": "d75e45c8-2817-4409-9fca-c58c49b9b7da",
+      "unit_number": "Casa 20",
+      "zone": "Asignada por Sistema",
+      "block": "bloque 08 Casa 20",
+      "house_number": "Casa 20",
+      "dwelling_type": "apartamento",
+      "is_active": true,
+      "created_at": "2026-11-05T23:13:44.78532+00:00"
     }
   ],
   "residents": [
@@ -101,6 +121,21 @@
       "is_active": true,
       "created_at": "2026-11-04T00:59:16.954284+00:00",
       "updated_at": "2026-11-04T00:59:16.954284+00:00"
+    },
+    {
+      "id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
+      "user_id": null,
+      "dwelling_id": "4e60632c-6a97-406e-81a5-34ec5d7872b7",
+      "full_name": "Mario Roa",
+      "document_id": "14852963",
+      "email": "maroa@gmail.com",
+      "phone": "",
+      "residency_type": "arrendatario",
+      "payments_current": true,
+      "payment_verified_until": null,
+      "is_active": true,
+      "created_at": "2026-11-05T23:11:09.090308+00:00",
+      "updated_at": "2026-11-05T23:11:09.090308+00:00"
     }
   ],
   "vehicles": [
@@ -167,6 +202,38 @@
       "is_active": true,
       "created_at": "2026-11-04T00:59:17.688485+00:00",
       "updated_at": "2026-11-04T00:59:17.688485+00:00"
+    },
+    {
+      "id": "83ffa7f4-b8b3-4c53-a497-8f08a9018266",
+      "dwelling_id": "4e60632c-6a97-406e-81a5-34ec5d7872b7",
+      "resident_id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
+      "internal_code": "VEH-005",
+      "plate": "ABC489",
+      "brand": "Ford",
+      "model": "",
+      "color": null,
+      "vehicle_type": "A",
+      "vehicle_category": "antiguo",
+      "is_oversized": true,
+      "is_active": true,
+      "created_at": "2026-11-05T23:11:09.847184+00:00",
+      "updated_at": "2026-11-05T23:11:09.847184+00:00"
+    },
+    {
+      "id": "a5691f4c-5218-4b64-b298-251cd9e810bc",
+      "dwelling_id": "d75e45c8-2817-4409-9fca-c58c49b9b7da",
+      "resident_id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
+      "internal_code": "MOT-001",
+      "plate": "AJC48A",
+      "brand": "Pulsar",
+      "model": "",
+      "color": null,
+      "vehicle_type": "M",
+      "vehicle_category": "antiguo",
+      "is_oversized": false,
+      "is_active": true,
+      "created_at": "2026-11-05T23:13:45.700139+00:00",
+      "updated_at": "2026-11-05T23:13:45.700139+00:00"
     }
   ],
   "vehicle_documents": [],
@@ -1652,6 +1719,24 @@
       "executed_by": null,
       "executed_at": "2026-10-25T04:38:52.192+00:00",
       "created_at": "2026-10-25T04:26:42.123945+00:00"
+    },
+    {
+      "id": "72e01e26-7c91-47da-8ba6-b01e8b565f12",
+      "cycle_id": "73403afb-2320-4f50-8768-55ce2e345f0a",
+      "period": "2026-Q4",
+      "quarter_start": "2026-10-01",
+      "quarter_end": "2026-12-31",
+      "vehicle_type": "M",
+      "capacity": 25,
+      "status": "postulacion_abierta",
+      "seed_hash": null,
+      "revealed_seed": null,
+      "snapshot_hash": null,
+      "result_hash": null,
+      "algorithm_version": "v2.0-fisher-yates",
+      "executed_by": null,
+      "executed_at": null,
+      "created_at": "2026-11-05T23:13:44.33878+00:00"
     }
   ],
   "parking_requests": [
@@ -1722,6 +1807,40 @@
       "is_direct_assignment": false,
       "previous_zone_assigned": null,
       "submitted_at": "2026-11-04T00:59:18.159135+00:00"
+    },
+    {
+      "id": "965f23c5-7118-4227-97f6-c8c64518beaa",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "resident_id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
+      "dwelling_id": "4e60632c-6a97-406e-81a5-34ec5d7872b7",
+      "vehicle_id": "83ffa7f4-b8b3-4c53-a497-8f08a9018266",
+      "receipt_number": "ACUSE-A-271255",
+      "residency_type_snapshot": "arrendatario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "under_review",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-11-05T23:11:10.337758+00:00"
+    },
+    {
+      "id": "88797a05-980e-440d-9d36-c8fbc1b67363",
+      "raffle_id": "72e01e26-7c91-47da-8ba6-b01e8b565f12",
+      "resident_id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
+      "dwelling_id": "d75e45c8-2817-4409-9fca-c58c49b9b7da",
+      "vehicle_id": "a5691f4c-5218-4b64-b298-251cd9e810bc",
+      "receipt_number": "ACUSE-M-427115",
+      "residency_type_snapshot": "propietario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "under_review",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-11-05T23:13:46.138767+00:00"
     }
   ],
   "request_reviews": [
