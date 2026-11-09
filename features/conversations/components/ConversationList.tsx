@@ -69,6 +69,7 @@ export function ConversationList({ activeConversationId, userEmail }: Conversati
       await loadConversations()
     } catch (error) {
       console.error('Error creating conversation:', error)
+      alert('Error al crear conversación: ' + (error instanceof Error ? error.message : String(error)))
     } finally {
       setCreating(false)
     }

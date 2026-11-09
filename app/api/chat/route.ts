@@ -24,21 +24,16 @@ export async function POST(req: Request) {
     const supabase = await createClient()
     const {
       data: { user },
-      error: authError,
     } = await supabase.auth.getUser()
 
-    if (authError || !user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    if (conversationId) {
+    if (conversationId && user) {
       const { data: conversation } = await supabase
         .from('conversations')
         .select('user_id')
         .eq('id', conversationId)
         .single()
 
-      if (!conversation || conversation.user_id !== user.id) {
+      if (conversation && conversation.user_id && conversation.user_id !== user.id) {
         return Response.json({ error: 'Forbidden' }, { status: 403 })
       }
     }
@@ -72,7 +67,7 @@ export async function POST(req: Request) {
         .from('messages')
         .insert({
           conversation_id: conversationId,
-          user_id: user.id,
+          user_id: user?.id || null,
           role: 'user',
           content: lastMessage.content,
           model_used: modelId,
@@ -105,7 +100,7 @@ export async function POST(req: Request) {
             .from('messages')
             .insert({
               conversation_id: conversationId,
-              user_id: user.id,
+              user_id: user?.id || null,
               role: 'assistant',
               content: text,
               model_used: modelId,

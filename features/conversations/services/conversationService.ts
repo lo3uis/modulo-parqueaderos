@@ -16,12 +16,10 @@ export async function createConversation(
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) throw new Error('Not authenticated')
-
   const { data, error } = await supabase
     .from('conversations')
     .insert({
-      user_id: user.id,
+      user_id: user?.id || null,
       title: input.title || 'Nueva Conversación',
     })
     .select()
@@ -161,13 +159,11 @@ export async function createMessage(
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) throw new Error('Not authenticated')
-
   const { data, error } = await supabase
     .from('messages')
     .insert({
       ...input,
-      user_id: user.id,
+      user_id: user?.id || null,
     })
     .select()
     .single()
