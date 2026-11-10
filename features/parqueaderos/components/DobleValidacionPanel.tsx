@@ -263,9 +263,20 @@ export function DobleValidacionPanel() {
               const consejoReview = req.reviews?.find((r: any) => r.reviewer_role === 'consejo');
               const isEligible = req.status === 'eligible';
               const isDisqualified = req.status === 'disqualified';
+              const roleReview = activeRole === 'admin' ? adminReview : consejoReview;
+              const hasRoleReviewed = !!roleReview;
 
               return (
-                <div key={req.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+                <div
+                  key={req.id}
+                  className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs transition ${
+                    isEligible
+                      ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-l-4 border-l-emerald-500'
+                      : isDisqualified
+                      ? 'bg-rose-50/30 dark:bg-rose-950/10 border-l-4 border-l-rose-500'
+                      : ''
+                  }`}
+                >
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold text-gray-900 dark:text-gray-100 text-sm">
@@ -415,7 +426,7 @@ export function DobleValidacionPanel() {
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    {req.status !== 'assigned_direct' && (
+                    {req.status !== 'assigned_direct' && !isEligible && (
                       <button
                         onClick={() => handleOpenSpecialAssignModal(req)}
                         className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm"
@@ -427,9 +438,20 @@ export function DobleValidacionPanel() {
 
                     <button
                       onClick={() => handleOpenModal(req)}
-                      className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-emerald-600 hover:text-white font-semibold text-xs transition"
+                      className={`px-4 py-2 rounded-lg font-semibold text-xs transition flex items-center gap-1.5 ${
+                        hasRoleReviewed
+                          ? 'bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/60 dark:hover:bg-emerald-800/80 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 shadow-sm'
+                          : 'bg-gray-100 dark:bg-gray-800 hover:bg-emerald-600 hover:text-white'
+                      }`}
                     >
-                      {activeRole === 'admin' ? 'Validar como Admin' : 'Validar como Consejo'}
+                      {hasRoleReviewed ? (
+                        <>
+                          <span>✓</span>
+                          <span>{activeRole === 'admin' ? 'Admin Validó' : 'Consejo Validó'} (Editar)</span>
+                        </>
+                      ) : (
+                        <span>{activeRole === 'admin' ? 'Validar como Admin' : 'Validar como Consejo'}</span>
+                      )}
                     </button>
                   </div>
                 </div>
