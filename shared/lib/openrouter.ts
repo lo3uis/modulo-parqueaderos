@@ -8,8 +8,16 @@ import { createOpenAI } from '@ai-sdk/openai'
  *
  * Documentation: https://openrouter.ai/docs
  */
+const getOpenRouterApiKey = (): string => {
+  const envKey =
+    process.env.OPENROUTER_API_KEY ||
+    (process.env as Record<string, string | undefined>)['OPENROUTER_API_KEY '] ||
+    ''
+  return envKey.trim().replace(/^['"]|['"]$/g, '')
+}
+
 export const openrouter = createOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY!,
+  apiKey: getOpenRouterApiKey(),
   baseURL: 'https://openrouter.ai/api/v1',
 })
 

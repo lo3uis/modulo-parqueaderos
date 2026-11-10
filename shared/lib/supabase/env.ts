@@ -14,8 +14,8 @@ export function getSupabaseEnv() {
   }
 
   // Si la clave es la antigua o está vacía, usar la del nuevo proyecto activo
-  if (!anonKey || anonKey.includes('cvXr1txDv3sb1R1d')) {
-    anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6Imp4dGF0dWNwYml3YWNxbmtjZHNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MDUzMTAsImV4cCI6MjEwOTI4MTMxMH0.xjPGYD86wtcKVIhtKThTsaZTugVv4kMV4xkOjkbWQWY'
+  if (!anonKey || anonKey.includes('cvXr1txDv3sb1R1d') || !anonKey.startsWith('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')) {
+    anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dGF0dWNwYml3YWNxbmtjZHNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MDUzMTAsImV4cCI6MjEwOTI4MTMxMH0.xjPGYD86wtcKVIhtKThTsaZTugVv4kMV4xkOjkbWQWY'
   }
 
   return { url, anonKey }

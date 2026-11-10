@@ -38,6 +38,18 @@ export async function POST(req: Request) {
       }
     }
 
+    const openRouterKey = (
+      process.env.OPENROUTER_API_KEY ||
+      (process.env as Record<string, string | undefined>)['OPENROUTER_API_KEY ']
+    )?.trim()
+
+    if (!openRouterKey && (modelInfo?.provider === 'openrouter' || !modelInfo)) {
+      return new Response(
+        'Falta configurar la variable OPENROUTER_API_KEY en el panel de Vercel (Settings -> Environment Variables).',
+        { status: 500 }
+      )
+    }
+
     const model = getModelInstance(modelId)
 
     const thinkingConfig = modelInfo?.supportsThinking
@@ -90,7 +102,7 @@ export async function POST(req: Request) {
       model,
       system: SYSTEM_PROMPT,
       messages: modelMessages,
-      maxOutputTokens: 4000,
+      maxOutputTokens: 2000,
       ...thinkingConfig,
       onFinish: async ({ text, usage }) => {
         if (!conversationId) return
@@ -158,7 +170,7 @@ export async function POST(req: Request) {
     console.error('Chat endpoint error:', error)
 
     return Response.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 },
     )
   }
