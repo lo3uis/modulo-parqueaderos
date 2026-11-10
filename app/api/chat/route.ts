@@ -38,10 +38,17 @@ export async function POST(req: Request) {
       }
     }
 
-    const openRouterKey = (
-      process.env.OPENROUTER_API_KEY ||
-      (process.env as Record<string, string | undefined>)['OPENROUTER_API_KEY ']
-    )?.trim()
+    const openRouterKey = ((): string => {
+      const env = process.env as Record<string, string | undefined>
+      for (const [key, val] of Object.entries(env)) {
+        const k = key.trim().toLowerCase()
+        if (k === 'openrouter_api_key' || k === 'next_public_openrouter_api_key') {
+          const cleanVal = (val || '').trim().replace(/^['"]|['"]$/g, '')
+          if (cleanVal.length > 5) return cleanVal
+        }
+      }
+      return ''
+    })()
 
     if (!openRouterKey && (modelInfo?.provider === 'openrouter' || !modelInfo)) {
       return new Response(

@@ -9,11 +9,15 @@ import { createOpenAI } from '@ai-sdk/openai'
  * Documentation: https://openrouter.ai/docs
  */
 const getOpenRouterApiKey = (): string => {
-  const envKey =
-    process.env.OPENROUTER_API_KEY ||
-    (process.env as Record<string, string | undefined>)['OPENROUTER_API_KEY '] ||
-    ''
-  return envKey.trim().replace(/^['"]|['"]$/g, '')
+  const env = process.env as Record<string, string | undefined>
+  for (const [key, val] of Object.entries(env)) {
+    const k = key.trim().toLowerCase()
+    if (k === 'openrouter_api_key' || k === 'next_public_openrouter_api_key') {
+      const cleanVal = (val || '').trim().replace(/^['"]|['"]$/g, '')
+      if (cleanVal.length > 5) return cleanVal
+    }
+  }
+  return ''
 }
 
 export const openrouter = createOpenAI({
