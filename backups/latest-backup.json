@@ -59,6 +59,16 @@
       "dwelling_type": "apartamento",
       "is_active": true,
       "created_at": "2026-11-05T23:13:44.78532+00:00"
+    },
+    {
+      "id": "8dc20813-d113-4f0a-8831-2441c6a3690b",
+      "unit_number": "casa 10",
+      "zone": "Asignada por Sistema",
+      "block": "Bloque 8",
+      "house_number": "casa 10",
+      "dwelling_type": "apartamento",
+      "is_active": true,
+      "created_at": "2026-11-09T20:39:08.457469+00:00"
     }
   ],
   "residents": [
@@ -136,6 +146,21 @@
       "is_active": true,
       "created_at": "2026-11-05T23:11:09.090308+00:00",
       "updated_at": "2026-11-05T23:11:09.090308+00:00"
+    },
+    {
+      "id": "50b23243-d67e-4544-925b-130747cc1694",
+      "user_id": null,
+      "dwelling_id": "8dc20813-d113-4f0a-8831-2441c6a3690b",
+      "full_name": "Amanda Rojas",
+      "document_id": "1000789614",
+      "email": "mispermis@gmail.com",
+      "phone": "",
+      "residency_type": "propietario",
+      "payments_current": true,
+      "payment_verified_until": null,
+      "is_active": true,
+      "created_at": "2026-11-09T20:39:09.379188+00:00",
+      "updated_at": "2026-11-09T20:39:09.379188+00:00"
     }
   ],
   "vehicles": [
@@ -234,6 +259,22 @@
       "is_active": true,
       "created_at": "2026-11-05T23:13:45.700139+00:00",
       "updated_at": "2026-11-05T23:13:45.700139+00:00"
+    },
+    {
+      "id": "975a4b94-e0cc-4765-be8a-01b505c7a8a2",
+      "dwelling_id": "8dc20813-d113-4f0a-8831-2441c6a3690b",
+      "resident_id": "50b23243-d67e-4544-925b-130747cc1694",
+      "internal_code": "MOT-002",
+      "plate": "AD12EJ",
+      "brand": "Pulsar",
+      "model": "",
+      "color": null,
+      "vehicle_type": "M",
+      "vehicle_category": "antiguo",
+      "is_oversized": false,
+      "is_active": true,
+      "created_at": "2026-11-09T20:39:10.131386+00:00",
+      "updated_at": "2026-11-09T20:39:10.131386+00:00"
     }
   ],
   "vehicle_documents": [],
@@ -791,18 +832,6 @@
       "created_at": "2026-10-25T04:14:21.07435+00:00"
     },
     {
-      "id": "d4e9ed4d-1fe2-4e40-be59-2290397d320a",
-      "space_number": "47",
-      "zone": "Zona 4",
-      "section": null,
-      "vehicle_type": "A",
-      "allows_oversized": true,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
       "id": "b4a9d819-9bb0-437a-8eb3-a9c143f4ba24",
       "space_number": "48",
       "zone": "Zona 4",
@@ -1055,13 +1084,25 @@
       "created_at": "2026-10-25T04:14:21.07435+00:00"
     },
     {
+      "id": "d4e9ed4d-1fe2-4e40-be59-2290397d320a",
+      "space_number": "47",
+      "zone": "Zona 4",
+      "section": null,
+      "vehicle_type": "A",
+      "allows_oversized": true,
+      "status": "assigned",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
       "id": "20ed7279-10e7-4b1f-a177-1445e690632d",
       "space_number": "69",
       "zone": "Zona 6",
       "section": null,
       "vehicle_type": "A",
       "allows_oversized": false,
-      "status": "available",
+      "status": "assigned",
       "notes": null,
       "is_active": true,
       "created_at": "2026-10-25T04:14:21.07435+00:00"
@@ -1271,18 +1312,6 @@
       "created_at": "2026-10-25T04:14:21.07435+00:00"
     },
     {
-      "id": "c4cc2e3c-1da5-4423-9eb8-fffd4ead1837",
-      "space_number": "87",
-      "zone": "Zona 8",
-      "section": null,
-      "vehicle_type": "A",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
       "id": "568a0caa-3703-460b-b589-3e51fcd6c842",
       "space_number": "88",
       "zone": "Zona 8",
@@ -1333,18 +1362,6 @@
     {
       "id": "9b6b4966-4a98-4956-b1bf-e62a465904f3",
       "space_number": "92",
-      "zone": "Zona 8",
-      "section": null,
-      "vehicle_type": "A",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "4b98a72a-3d51-4cc9-aab6-0a2a7cf1baeb",
-      "space_number": "93",
       "zone": "Zona 8",
       "section": null,
       "vehicle_type": "A",
@@ -1463,18 +1480,6 @@
       "created_at": "2026-10-25T04:14:21.07435+00:00"
     },
     {
-      "id": "e421da03-8216-4c66-8ed6-c4a57953d55c",
-      "space_number": "M-07",
-      "zone": "Zona Motos",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
       "id": "8600784f-a235-4ac6-89a1-455c532a702e",
       "space_number": "M-08",
       "zone": "Zona Motos",
@@ -1489,18 +1494,6 @@
     {
       "id": "fa33cbf7-650e-4755-8e34-ef851fe9bb13",
       "space_number": "M-09",
-      "zone": "Zona Motos",
-      "section": null,
-      "vehicle_type": "M",
-      "allows_oversized": false,
-      "status": "available",
-      "notes": null,
-      "is_active": true,
-      "created_at": "2026-10-25T04:14:21.07435+00:00"
-    },
-    {
-      "id": "7eb18887-f7d0-4af7-b4d0-d13e3db62be1",
-      "space_number": "M-10",
       "zone": "Zona Motos",
       "section": null,
       "vehicle_type": "M",
@@ -1689,6 +1682,54 @@
       "notes": null,
       "is_active": true,
       "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "4b98a72a-3d51-4cc9-aab6-0a2a7cf1baeb",
+      "space_number": "93",
+      "zone": "Zona 8",
+      "section": null,
+      "vehicle_type": "A",
+      "allows_oversized": false,
+      "status": "assigned",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "c4cc2e3c-1da5-4423-9eb8-fffd4ead1837",
+      "space_number": "87",
+      "zone": "Zona 8",
+      "section": null,
+      "vehicle_type": "A",
+      "allows_oversized": false,
+      "status": "assigned",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "7eb18887-f7d0-4af7-b4d0-d13e3db62be1",
+      "space_number": "M-10",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "assigned",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
+    },
+    {
+      "id": "e421da03-8216-4c66-8ed6-c4a57953d55c",
+      "space_number": "M-07",
+      "zone": "Zona Motos",
+      "section": null,
+      "vehicle_type": "M",
+      "allows_oversized": false,
+      "status": "assigned",
+      "notes": null,
+      "is_active": true,
+      "created_at": "2026-10-25T04:14:21.07435+00:00"
     }
   ],
   "rotation_cycles": [
@@ -1711,13 +1752,13 @@
       "vehicle_type": "A",
       "capacity": 96,
       "status": "sorteo_ejecutado",
-      "seed_hash": "HASH-665f8783",
-      "revealed_seed": "SEMILLA-1792903131302-nzudx6",
+      "seed_hash": "HASH-219a4399",
+      "revealed_seed": "SEMILLA-1794281241021-aqmwue",
       "snapshot_hash": null,
       "result_hash": null,
       "algorithm_version": "v2.0-fisher-yates",
       "executed_by": null,
-      "executed_at": "2026-10-25T04:38:52.192+00:00",
+      "executed_at": "2026-11-10T03:27:23.681+00:00",
       "created_at": "2026-10-25T04:26:42.123945+00:00"
     },
     {
@@ -1728,52 +1769,18 @@
       "quarter_end": "2026-12-31",
       "vehicle_type": "M",
       "capacity": 25,
-      "status": "postulacion_abierta",
-      "seed_hash": null,
-      "revealed_seed": null,
+      "status": "sorteo_ejecutado",
+      "seed_hash": "HASH-212e71ca",
+      "revealed_seed": "SEMILLA-1794281262397-byf4vm",
       "snapshot_hash": null,
       "result_hash": null,
       "algorithm_version": "v2.0-fisher-yates",
       "executed_by": null,
-      "executed_at": null,
+      "executed_at": "2026-11-10T03:27:43.74+00:00",
       "created_at": "2026-11-05T23:13:44.33878+00:00"
     }
   ],
   "parking_requests": [
-    {
-      "id": "f6674dc4-f811-4cb6-b777-ed762820edd0",
-      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
-      "resident_id": "6ffe8220-1855-4501-8e7d-78acae5b47ce",
-      "dwelling_id": "32f3d885-72c6-4729-afc7-ab1e6cc59acb",
-      "vehicle_id": "6f0da669-5ffa-4a18-b33a-3e2dc81edbe1",
-      "receipt_number": "ACUSE-A-716950",
-      "residency_type_snapshot": "arrendatario",
-      "payment_status_snapshot": "al_dia",
-      "payment_validation_note": null,
-      "documents_complete": false,
-      "status": "eligible",
-      "has_white_ballot": false,
-      "is_direct_assignment": false,
-      "previous_zone_assigned": null,
-      "submitted_at": "2026-10-25T04:31:55.906053+00:00"
-    },
-    {
-      "id": "97be67b0-ae08-4ec0-a4cd-8eb9408d5846",
-      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
-      "resident_id": "d05d32f6-aa15-4219-9da2-eb75809dec46",
-      "dwelling_id": "6e312027-9c79-4683-95cf-ab6e4bfb4193",
-      "vehicle_id": "28955ab7-ea4c-49c3-8e1e-a26e061ec25d",
-      "receipt_number": "ACUSE-A-404523",
-      "residency_type_snapshot": "propietario",
-      "payment_status_snapshot": "al_dia",
-      "payment_validation_note": null,
-      "documents_complete": true,
-      "status": "eligible",
-      "has_white_ballot": false,
-      "is_direct_assignment": false,
-      "previous_zone_assigned": null,
-      "submitted_at": "2026-10-25T04:26:43.496375+00:00"
-    },
     {
       "id": "7bf4586c-3a55-4cad-bb43-8723d6581216",
       "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
@@ -1792,23 +1799,6 @@
       "submitted_at": "2026-10-27T02:00:32.460516+00:00"
     },
     {
-      "id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
-      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
-      "resident_id": "c81a8301-e0cb-49f8-a0dc-00750417340e",
-      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
-      "vehicle_id": "287d8b67-f934-4812-b711-fa9d07c09134",
-      "receipt_number": "ACUSE-A-957440",
-      "residency_type_snapshot": "propietario",
-      "payment_status_snapshot": "al_dia",
-      "payment_validation_note": null,
-      "documents_complete": true,
-      "status": "under_review",
-      "has_white_ballot": false,
-      "is_direct_assignment": false,
-      "previous_zone_assigned": null,
-      "submitted_at": "2026-11-04T00:59:18.159135+00:00"
-    },
-    {
       "id": "965f23c5-7118-4227-97f6-c8c64518beaa",
       "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
       "resident_id": "baf9f73e-4bcd-4edd-85f4-2a20f0294286",
@@ -1819,11 +1809,62 @@
       "payment_status_snapshot": "al_dia",
       "payment_validation_note": null,
       "documents_complete": true,
-      "status": "under_review",
+      "status": "assigned_raffle",
       "has_white_ballot": false,
       "is_direct_assignment": false,
       "previous_zone_assigned": null,
       "submitted_at": "2026-11-05T23:11:10.337758+00:00"
+    },
+    {
+      "id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "resident_id": "c81a8301-e0cb-49f8-a0dc-00750417340e",
+      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "vehicle_id": "287d8b67-f934-4812-b711-fa9d07c09134",
+      "receipt_number": "ACUSE-A-957440",
+      "residency_type_snapshot": "propietario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "assigned_raffle",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-11-04T00:59:18.159135+00:00"
+    },
+    {
+      "id": "f6674dc4-f811-4cb6-b777-ed762820edd0",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "resident_id": "6ffe8220-1855-4501-8e7d-78acae5b47ce",
+      "dwelling_id": "32f3d885-72c6-4729-afc7-ab1e6cc59acb",
+      "vehicle_id": "6f0da669-5ffa-4a18-b33a-3e2dc81edbe1",
+      "receipt_number": "ACUSE-A-716950",
+      "residency_type_snapshot": "arrendatario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": false,
+      "status": "assigned_raffle",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-10-25T04:31:55.906053+00:00"
+    },
+    {
+      "id": "97be67b0-ae08-4ec0-a4cd-8eb9408d5846",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "resident_id": "d05d32f6-aa15-4219-9da2-eb75809dec46",
+      "dwelling_id": "6e312027-9c79-4683-95cf-ab6e4bfb4193",
+      "vehicle_id": "28955ab7-ea4c-49c3-8e1e-a26e061ec25d",
+      "receipt_number": "ACUSE-A-404523",
+      "residency_type_snapshot": "propietario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "assigned_raffle",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-10-25T04:26:43.496375+00:00"
     },
     {
       "id": "88797a05-980e-440d-9d36-c8fbc1b67363",
@@ -1836,11 +1877,28 @@
       "payment_status_snapshot": "al_dia",
       "payment_validation_note": null,
       "documents_complete": true,
-      "status": "under_review",
+      "status": "assigned_raffle",
       "has_white_ballot": false,
       "is_direct_assignment": false,
       "previous_zone_assigned": null,
       "submitted_at": "2026-11-05T23:13:46.138767+00:00"
+    },
+    {
+      "id": "f9166156-e9db-4a43-9079-625b32bc0c50",
+      "raffle_id": "72e01e26-7c91-47da-8ba6-b01e8b565f12",
+      "resident_id": "50b23243-d67e-4544-925b-130747cc1694",
+      "dwelling_id": "8dc20813-d113-4f0a-8831-2441c6a3690b",
+      "vehicle_id": "975a4b94-e0cc-4765-be8a-01b505c7a8a2",
+      "receipt_number": "ACUSE-M-750779",
+      "residency_type_snapshot": "propietario",
+      "payment_status_snapshot": "al_dia",
+      "payment_validation_note": null,
+      "documents_complete": true,
+      "status": "assigned_raffle",
+      "has_white_ballot": false,
+      "is_direct_assignment": false,
+      "previous_zone_assigned": null,
+      "submitted_at": "2026-11-09T20:39:10.634132+00:00"
     }
   ],
   "request_reviews": [
@@ -1903,9 +1961,138 @@
       },
       "observations": "VehÃ­culo registra 1 amonestaciÃ³n(es) oficial(es) en porterÃ­a.",
       "reviewed_at": "2026-10-26T15:00:27.712+00:00"
+    },
+    {
+      "id": "b1b24b21-401d-40bf-a85a-23bb378f4f1c",
+      "request_id": "f9166156-e9db-4a43-9079-625b32bc0c50",
+      "reviewer_role": "consejo",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:23:57.763+00:00"
+    },
+    {
+      "id": "cdd99f6d-beda-4031-97b0-eba637878c58",
+      "request_id": "f9166156-e9db-4a43-9079-625b32bc0c50",
+      "reviewer_role": "admin",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:24:07.096+00:00"
+    },
+    {
+      "id": "014037d2-ba63-4840-82d0-613ead2f6a02",
+      "request_id": "88797a05-980e-440d-9d36-c8fbc1b67363",
+      "reviewer_role": "admin",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:24:17.55+00:00"
+    },
+    {
+      "id": "7413911e-fb58-46b5-8506-2ac9b9ae2553",
+      "request_id": "88797a05-980e-440d-9d36-c8fbc1b67363",
+      "reviewer_role": "consejo",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:24:25.946+00:00"
+    },
+    {
+      "id": "dab62758-aad6-493e-810e-e19cb900003a",
+      "request_id": "965f23c5-7118-4227-97f6-c8c64518beaa",
+      "reviewer_role": "consejo",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:24:37.84+00:00"
+    },
+    {
+      "id": "c7450548-fa22-4c14-a597-0e18a068aaf6",
+      "request_id": "965f23c5-7118-4227-97f6-c8c64518beaa",
+      "reviewer_role": "admin",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:24:45.208+00:00"
+    },
+    {
+      "id": "b58a0979-98bb-410b-84f6-cde04007d6df",
+      "request_id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "reviewer_role": "consejo",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:26:48.543+00:00"
+    },
+    {
+      "id": "7c9f1b7d-daea-4d51-aca5-a4f446d5dbc7",
+      "request_id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "reviewer_role": "admin",
+      "reviewer_id": null,
+      "decision": "approved",
+      "checklist_data": {
+        "unitMatch": true,
+        "noSanctions": true,
+        "docsApproved": true,
+        "paymentsCurrent": true
+      },
+      "observations": "verificado estado contable a fecha de corte. Todo en orden",
+      "reviewed_at": "2026-11-10T03:27:01.038+00:00"
     }
   ],
-  "parking_request_disqualifications": [],
+  "parking_request_disqualifications": [
+    {
+      "id": "9c1948dc-a11d-4955-accb-66e8a16d5f0a",
+      "request_id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "reason_id": "6e2af030-af2c-4d4c-a23b-90240b6afec1",
+      "detail": "No cumple con el pago del mes administración y parqueadero",
+      "reviewed_by": null,
+      "created_at": "2026-11-10T03:25:21.771123+00:00"
+    }
+  ],
   "parking_assignments": [
     {
       "id": "36e4cb9a-01f5-4616-a4e0-6c9c2bc9dbc3",
@@ -1953,6 +2140,70 @@
       "zone_assigned": "Zona 1",
       "status": "active",
       "assigned_at": "2026-10-27T02:00:33.344+00:00",
+      "expires_at": "2026-12-31T00:00:00+00:00"
+    },
+    {
+      "id": "bdf808b4-d109-4f37-bca4-c703918f6039",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "request_id": "965f23c5-7118-4227-97f6-c8c64518beaa",
+      "parking_space_id": "d4e9ed4d-1fe2-4e40-be59-2290397d320a",
+      "vehicle_id": "83ffa7f4-b8b3-4c53-a497-8f08a9018266",
+      "dwelling_id": "4e60632c-6a97-406e-81a5-34ec5d7872b7",
+      "assignment_type": "raffle",
+      "period": "2026-Q4",
+      "quarter_start": "2026-10-01",
+      "quarter_end": "2026-12-31",
+      "zone_assigned": "Zona 4",
+      "status": "active",
+      "assigned_at": "2026-11-10T03:27:21.022+00:00",
+      "expires_at": "2026-12-31T00:00:00+00:00"
+    },
+    {
+      "id": "c7adf73e-9127-4f24-82b3-2391cd86fc73",
+      "raffle_id": "7021c3f1-ba96-45f4-83c5-845ee5677bd3",
+      "request_id": "2de5567a-f90f-43d4-84c7-aa995b7f794c",
+      "parking_space_id": "4b98a72a-3d51-4cc9-aab6-0a2a7cf1baeb",
+      "vehicle_id": "287d8b67-f934-4812-b711-fa9d07c09134",
+      "dwelling_id": "73939244-dc5c-468a-a1bd-d13c106e454d",
+      "assignment_type": "raffle",
+      "period": "2026-Q4",
+      "quarter_start": "2026-10-01",
+      "quarter_end": "2026-12-31",
+      "zone_assigned": "Zona 8",
+      "status": "active",
+      "assigned_at": "2026-11-10T03:27:21.713+00:00",
+      "expires_at": "2026-12-31T00:00:00+00:00"
+    },
+    {
+      "id": "9cd57d7c-da4c-4818-92d8-66cd418d96f1",
+      "raffle_id": "72e01e26-7c91-47da-8ba6-b01e8b565f12",
+      "request_id": "88797a05-980e-440d-9d36-c8fbc1b67363",
+      "parking_space_id": "7eb18887-f7d0-4af7-b4d0-d13e3db62be1",
+      "vehicle_id": "a5691f4c-5218-4b64-b298-251cd9e810bc",
+      "dwelling_id": "d75e45c8-2817-4409-9fca-c58c49b9b7da",
+      "assignment_type": "raffle",
+      "period": "2026-Q4",
+      "quarter_start": "2026-10-01",
+      "quarter_end": "2026-12-31",
+      "zone_assigned": "Zona Motos",
+      "status": "active",
+      "assigned_at": "2026-11-10T03:27:42.398+00:00",
+      "expires_at": "2026-12-31T00:00:00+00:00"
+    },
+    {
+      "id": "b474c339-a61f-4d70-a947-fe3ef0eff8f8",
+      "raffle_id": "72e01e26-7c91-47da-8ba6-b01e8b565f12",
+      "request_id": "f9166156-e9db-4a43-9079-625b32bc0c50",
+      "parking_space_id": "e421da03-8216-4c66-8ed6-c4a57953d55c",
+      "vehicle_id": "975a4b94-e0cc-4765-be8a-01b505c7a8a2",
+      "dwelling_id": "8dc20813-d113-4f0a-8831-2441c6a3690b",
+      "assignment_type": "raffle",
+      "period": "2026-Q4",
+      "quarter_start": "2026-10-01",
+      "quarter_end": "2026-12-31",
+      "zone_assigned": "Zona Motos",
+      "status": "active",
+      "assigned_at": "2026-11-10T03:27:43.042+00:00",
       "expires_at": "2026-12-31T00:00:00+00:00"
     }
   ],
@@ -2087,6 +2338,64 @@
       "description": "La balota blanca no se encuentra en estado vigente para este ciclo anual.",
       "is_active": true,
       "created_at": "2026-11-03T15:05:19.190071+00:00"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "c62d7039-d0a5-4d21-a500-20bc0787a935",
+      "user_id": null,
+      "title": "Nueva Conversación",
+      "created_at": "2026-11-10T02:40:07.671241+00:00",
+      "updated_at": "2026-11-10T02:40:07.671241+00:00"
+    },
+    {
+      "id": "42cd587d-7edc-4644-91d2-7e9b82d5cfb3",
+      "user_id": null,
+      "title": "Nueva Conversación",
+      "created_at": "2026-11-10T03:06:20.808287+00:00",
+      "updated_at": "2026-11-10T03:06:20.808287+00:00"
+    },
+    {
+      "id": "8f80bb9f-4d11-4dca-ab72-c1f6d75dbab0",
+      "user_id": null,
+      "title": "Spanish Greeting",
+      "created_at": "2026-11-10T03:08:12.726609+00:00",
+      "updated_at": "2026-11-10T03:08:12.726609+00:00"
+    }
+  ],
+  "messages": [
+    {
+      "id": "4c171c08-d499-4bc5-824f-0f4dd2e65e11",
+      "conversation_id": "c62d7039-d0a5-4d21-a500-20bc0787a935",
+      "user_id": null,
+      "role": "user",
+      "content": "Hola",
+      "model_used": "claude-haiku-4-5",
+      "tokens_input": null,
+      "tokens_output": null,
+      "timestamp": "2026-11-10T02:40:20.610784+00:00"
+    },
+    {
+      "id": "adf59824-3988-4e38-99c0-c1c87375bfa7",
+      "conversation_id": "8f80bb9f-4d11-4dca-ab72-c1f6d75dbab0",
+      "user_id": null,
+      "role": "user",
+      "content": "Hola",
+      "model_used": "claude-haiku-4-5",
+      "tokens_input": null,
+      "tokens_output": null,
+      "timestamp": "2026-11-10T03:08:17.466857+00:00"
+    },
+    {
+      "id": "f6baa5f9-3fc3-460f-a485-0b21a940eabe",
+      "conversation_id": "8f80bb9f-4d11-4dca-ab72-c1f6d75dbab0",
+      "user_id": null,
+      "role": "assistant",
+      "content": "¡Hola! 👋 \n\n¿Qué necesitas? Estoy aquí para ayudarte con preguntas, información, análisis, escritura o cualquier otra cosa en la que pueda serte útil.\n\n¿En qué puedo ayudarte hoy?",
+      "model_used": "claude-haiku-4-5",
+      "tokens_input": 175,
+      "tokens_output": 73,
+      "timestamp": "2026-11-10T03:08:19.072094+00:00"
     }
   ]
 }
